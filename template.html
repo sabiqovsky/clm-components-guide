@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xendit Components Guide</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    /* ── Variables ─────────────────────────────────────────── */
+    :root {
+      --brand-blue:        #1762ee;
+      --brand-blue-dark:   #0f4bc4;
+      --brand-blue-light:  #eef3fc;
+      --brand-blue-subtle: #f6f9fe;
+      --text-main:         #1a1f36;
+      --text-secondary:    #424770;
+      --text-muted:        #697386;
+      --bg-page:           #f7f9fc;
+      --bg-surface:        #ffffff;
+      --bg-code:           #f3f5f9;
+      --border-subtle:     #e6ebf1;
+      --border-light:      #c0c8d1;
+      --success-bg:        #e3f6ea;
+      --success-text:      #0b7a39;
+      --warning-bg:        #fff4d4;
+      --warning-text:      #a15d04;
+      --error-bg:          #fae1e1;
+      --error-text:        #b81e1e;
+      --shadow-sm:         0 2px 4px rgba(0,0,0,0.04);
+      --shadow-md:         0 4px 12px rgba(0,0,0,0.08);
+      --radius:            8px;
+      --nav-width:         260px;
+    }
+
+    /* ── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-main);
+      background: var(--bg-page);
+    }
+
+    /* ── Auth screen ───────────────────────────────────────── */
+    #auth-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-page);
+    }
+    .auth-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 48px 40px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: var(--shadow-md);
+    }
+    .auth-logo {
+      width: 40px;
+      height: 40px;
+      background: var(--brand-blue);
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .auth-logo svg { width: 22px; height: 22px; fill: white; }
+    .auth-card h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+    .auth-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+    #g_id_signin { display: flex; justify-content: center; }
+    .auth-footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    #auth-error {
+      display: none;
+      background: var(--error-bg);
+      color: var(--error-text);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-size: 14px;
+      margin-top: 16px;
+    }
+
+    /* ── App layout ────────────────────────────────────────── */
+    #app { display: none; min-height: 100vh; }
+
+    /* Header */
+    #app-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text-main);
+    }
+    .header-brand .dot {
+      width: 8px; height: 8px;
+      background: var(--brand-blue);
+      border-radius: 50%;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .header-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .user-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--brand-blue-light);
+      color: var(--brand-blue);
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Nav */
+    #side-nav {
+      position: fixed;
+      top: 56px; left: 0; bottom: 0;
+      width: var(--nav-width);
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-subtle);
+      overflow-y: auto;
+      padding: 24px 0;
+      z-index: 90;
+    }
+    .nav-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      padding: 0 20px 8px;
+    }
+    .toc-list { list-style: none; }
+    .toc-list li a {
+      display: block;
+      padding: 7px 20px;
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .toc-list li a:hover {
+      color: var(--brand-blue);
+      background: var(--brand-blue-subtle);
+    }
+    .toc-list li a.active {
+      color: var(--brand-blue);
+      background: var(--brand-blue-light);
+      border-left-color: var(--brand-blue);
+      font-weight: 600;
+    }
+
+    /* Main content */
+    #main-content {
+      margin-left: var(--nav-width);
+      margin-top: 56px;
+      padding: 40px 48px;
+      max-width: 900px;
+    }
+
+    /* Sections */
+    #main-content section {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Typography */
+    #main-content h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    #main-content h2 {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin: 28px 0 12px;
+    }
+    #main-content h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin: 20px 0 8px;
+    }
+    #main-content p { margin-bottom: 14px; color: var(--text-secondary); }
+    #main-content ul, #main-content ol {
+      margin: 0 0 14px 20px;
+      color: var(--text-secondary);
+    }
+    #main-content li { margin-bottom: 6px; }
+    #main-content a { color: var(--brand-blue); }
+    #main-content strong { color: var(--text-main); font-weight: 600; }
+
+    /* Blockquote callouts */
+    #main-content blockquote {
+      background: var(--brand-blue-subtle);
+      border-left: 3px solid var(--brand-blue);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* Code */
+    #main-content code {
+      background: var(--bg-code);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      color: var(--brand-blue-dark);
+    }
+    #main-content pre {
+      background: #1e2333;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+    #main-content pre code {
+      background: none;
+      color: #e2e8f0;
+      font-size: 13.5px;
+      padding: 0;
+    }
+
+    /* Tables */
+    #main-content table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 16px 0;
+      overflow-x: auto;
+      display: block;
+    }
+    #main-content th {
+      background: var(--brand-blue-light);
+      color: var(--brand-blue-dark);
+      font-weight: 600;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid var(--brand-blue);
+    }
+    #main-content td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+    #main-content tr:last-child td { border-bottom: none; }
+    #main-content tr:hover td { background: var(--bg-page); }
+
+    /* Mermaid diagrams */
+    .mermaid-wrapper {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 20px 0;
+      overflow-x: auto;
+      text-align: center;
+    }
+    .mermaid-wrapper pre { background: none; padding: 0; margin: 0; }
+
+    /* Build info bar */
+    #build-info {
+      margin-left: var(--nav-width);
+      padding: 8px 48px;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* Back to top */
+    #back-to-top {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--brand-blue);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px; height: 40px;
+      cursor: pointer;
+      font-size: 18px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+      z-index: 200;
+    }
+    #back-to-top:hover { background: var(--brand-blue-dark); }
+
+    /* Loading */
+    #loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.9);
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      font-size: 14px;
+      color: var(--text-muted);
+      flex-direction: column;
+      gap: 12px;
+    }
+    .spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--border-light);
+      border-top-color: var(--brand-blue);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      #side-nav { display: none; }
+      #main-content { margin-left: 0; padding: 24px 16px; }
+      #build-info { margin-left: 0; padding: 8px 16px; }
+      #main-content section { padding: 24px 20px; }
+    }
+
+    /* Print */
+    @media print {
+      #auth-screen, #app-header, #side-nav, #back-to-top, #loading-overlay { display: none !important; }
+      #app { display: block !important; }
+      #main-content { margin: 0; padding: 0; max-width: 100%; }
+      #main-content section { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Auth screen ──────────────────────────────────────────────────── -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <h1>Xendit Components Guide</h1>
+    <p>Internal resource for CSM &amp; CIM teams.<br>Sign in with your Xendit Google account.</p>
+    <div id="g_id_signin"></div>
+    <div id="auth-error">Access denied. This guide is restricted to <strong>@xendit.co</strong> accounts.</div>
+    <div class="auth-footer">Restricted to @xendit.co accounts</div>
+  </div>
+</div>
+
+<!-- ── Loading overlay ──────────────────────────────────────────────── -->
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <span>Decrypting content…</span>
+</div>
+
+<!-- ── App ──────────────────────────────────────────────────────────── -->
+<div id="app">
+  <header id="app-header">
+    <div class="header-brand">
+      <div class="dot"></div>
+      Xendit Components Guide
+    </div>
+    <div class="header-right">
+      <span id="build-timestamp"></span>
+      <div class="header-user">
+        <div class="user-avatar" id="user-initials">?</div>
+        <span id="user-name"></span>
+      </div>
+    </div>
+  </header>
+
+  <nav id="side-nav">
+    <div class="nav-section-title">Contents</div>
+    {{TOC_HTML}}
+  </nav>
+
+  <main id="main-content">
+    <!-- Decrypted content injected here -->
+  </main>
+
+  <div id="build-info">
+    Last updated: <span id="build-timestamp-footer">{{BUILD_TIME}}</span>
+    &nbsp;·&nbsp; {{SECTION_COUNT}} sections
+  </div>
+</div>
+
+<button id="back-to-top" title="Back to top">↑</button>
+
+<!-- ── Encrypted content blob ───────────────────────────────────────── -->
+<script>
+  // Injected at build time — do not edit manually
+  const ENCRYPTED_BLOB  = '{{ENCRYPTED_BLOB}}';
+  const CONTENT_SALT_B64 = '{{CONTENT_SALT}}';
+  const BUILD_TIME      = '{{BUILD_TIME}}';
+</script>
+
+<!-- ── Google Identity Services ─────────────────────────────────────── -->
+<script src="https://accounts.google.com/gsi/client" async></script>
+
+<!-- ── Mermaid ──────────────────────────────────────────────────────── -->
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  window.__mermaid = mermaid;
+</script>
+
+<!-- ── Auth + Decryption logic ──────────────────────────────────────── -->
+<script>
+(function() {
+  'use strict';
+
+  const CLIENT_ID       = '527936545532-10mmrufrdrkpjlr2l03kgq6fj2d78vu2.apps.googleusercontent.com';
+  const ALLOWED_DOMAIN  = 'xendit.co';
+  const PBKDF2_ITERS    = 100000;
+
+  // ── Decode JWT payload (no library needed) ──────────────────────────
+  function decodeJwtPayload(token) {
+    const parts = token.split('.');
+    if (parts.length !== 3) throw new Error('Invalid JWT');
+    const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const json = atob(payload.padEnd(payload.length + (4 - payload.length % 4) % 4, '='));
+    return JSON.parse(json);
+  }
+
+  // ── PBKDF2 key derivation (Web Crypto) ──────────────────────────────
+  async function deriveKey(password, saltBytes) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']
+    );
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: saltBytes, iterations: PBKDF2_ITERS, hash: 'SHA-256' },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['decrypt']
+    );
+  }
+
+  // ── Base64 → Uint8Array ─────────────────────────────────────────────
+  function b64ToBytes(b64) {
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return bytes;
+  }
+
+  // ── Decrypt content blob ────────────────────────────────────────────
+  async function decryptContent(hdClaim) {
+    // Password = hd claim + content salt (same formula as build.js)
+    const contentSaltBytes = b64ToBytes(CONTENT_SALT_B64);
+    // Derive password by HMAC-SHA256(hdClaim, contentSalt) — matches build.js logic
+    const enc = new TextEncoder();
+    const hmacKey = await crypto.subtle.importKey(
+      'raw', contentSaltBytes, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+    );
+    const passwordBytes = await crypto.subtle.sign('HMAC', hmacKey, enc.encode(hdClaim));
+    const password = btoa(String.fromCharCode(...new Uint8Array(passwordBytes)));
+
+    // Unpack blob: salt(16) + iv(12) + authTag(16) + ciphertext
+    const packed = b64ToBytes(ENCRYPTED_BLOB);
+    const salt    = packed.slice(0, 16);
+    const iv      = packed.slice(16, 28);
+    const authTag = packed.slice(28, 44);
+    const cipher  = packed.slice(44);
+
+    // AES-GCM decrypt (authTag is appended to ciphertext per Web Crypto spec)
+    const cipherWithTag = new Uint8Array([...cipher, ...authTag]);
+    const key = await deriveKey(password, salt);
+
+    const plainBuffer = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv },
+      key,
+      cipherWithTag
+    );
+    return new TextDecoder().decode(plainBuffer);
+  }
+
+  // ── Show error ──────────────────────────────────────────────────────
+  function showError(msg) {
+    const el = document.getElementById('auth-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+    document.getElementById('loading-overlay').style.display = 'none';
+  }
+
+  // ── Initialize Mermaid on rendered content ──────────────────────────
+  function initMermaid() {
+    const tryInit = setInterval(() => {
+      if (window.__mermaid) {
+        clearInterval(tryInit);
+        window.__mermaid.initialize({
+          startOnLoad: false,
+          theme: 'base',
+          themeVariables: {
+            primaryColor: '#eef3fc',
+            primaryBorderColor: '#1762ee',
+            primaryTextColor: '#1a1f36',
+            lineColor: '#1762ee',
+            secondaryColor: '#f7f9fc',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+            fontSize: '14px',
+          },
+          flowchart: { htmlLabels: true, curve: 'basis' },
+          sequence: { actorFontSize: 14, messageFontSize: 13 },
+        });
+        window.__mermaid.run({
+          nodes: document.querySelectorAll('pre.mermaid'),
+        });
+      }
+    }, 100);
+  }
+
+  // ── Scroll spy ──────────────────────────────────────────────────────
+  function initScrollSpy() {
+    const sections = document.querySelectorAll('#main-content section[id]');
+    const links = document.querySelectorAll('.nav-link');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => observer.observe(s));
+  }
+
+  // ── Back to top ─────────────────────────────────────────────────────
+  function initBackToTop() {
+    const btn = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      btn.style.display = window.scrollY > 400 ? 'flex' : 'none';
+    });
+    btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
+
+  // ── Render app ──────────────────────────────────────────────────────
+  function showApp(html, claims) {
+    document.getElementById('main-content').innerHTML = html;
+    document.getElementById('user-name').textContent = claims.name || claims.email || '';
+    const initials = (claims.name || claims.email || '?').charAt(0).toUpperCase();
+    document.getElementById('user-initials').textContent = initials;
+    const ts = new Date(BUILD_TIME).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    document.getElementById('build-timestamp').textContent = `Updated ${ts}`;
+
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('loading-overlay').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+
+    initMermaid();
+    initScrollSpy();
+    initBackToTop();
+  }
+
+  // ── Google sign-in callback ──────────────────────────────────────────
+  window.handleCredentialResponse = async function(response) {
+    document.getElementById('loading-overlay').style.display = 'flex';
+    try {
+      const claims = decodeJwtPayload(response.credential);
+
+      // Verify hosted domain
+      if (claims.hd !== ALLOWED_DOMAIN) {
+        showError(`Access denied. Only @${ALLOWED_DOMAIN} accounts are allowed.`);
+        return;
+      }
+
+      const html = await decryptContent(claims.hd);
+      showApp(html, claims);
+    } catch (err) {
+      console.error('[auth] Decryption failed:', err);
+      showError('Unable to load content. Please try signing in again.');
+    }
+  };
+
+  // ── Initialize Google Identity Services ─────────────────────────────
+  window.addEventListener('load', () => {
+    // Small delay to ensure GSI script is loaded
+    const tryInit = setInterval(() => {
+      if (window.google && window.google.accounts) {
+        clearInterval(tryInit);
+        google.accounts.id.initialize({
+          client_id: CLIENT_ID,
+          callback: window.handleCredentialResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+        google.accounts.id.renderButton(
+          document.getElementById('g_id_signin'),
+          { theme: 'outline', size: 'large', text: 'signin_with', shape: 'rectangular', width: 280 }
+        );
+      }
+    }, 100);
+  });
+
+})();
+</script>
+</body>
+</html>

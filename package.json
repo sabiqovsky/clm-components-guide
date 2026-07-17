@@ -1,0 +1,16 @@
+{
+  "name": "clm-components-guide",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Xendit Components internal guide — static encrypted HTML",
+  "scripts": {
+    "build": "node build.js",
+    "preview": "npx serve docs/"
+  },
+  "devDependencies": {
+    "marked": "^12.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

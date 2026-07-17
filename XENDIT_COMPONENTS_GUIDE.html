@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧩 Xendit Components — A Practical Guide for Ops Teams</title>
+  <meta name="description"
+    content="A practical guide for Customer Product Specialists and Onboarding & Implementation Consultants explaining Xendit Components, security, styling, and merchant FAQs.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#eef3fc',
+        primaryBorderColor: '#1762ee',
+        primaryTextColor: '#1a1f36',
+        lineColor: '#1762ee',
+        secondaryColor: '#f7f9fc',
+        tertiaryColor: '#ffffff',
+        fontFamily: 'Inter, -apple-system, sans-serif',
+        fontSize: '15.5px',
+      },
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis'
+      },
+      sequence: {
+        actorFontSize: 15.5,
+        messageFontSize: 14.5,
+        noteFontSize: 14.5,
+        actorLineColor: '#c0c8d1'
+      }
+    });
+  </script>
+
+  <style>
+    :root {
+      /* Xendit Blue Colorway */
+      --brand-blue: #1762ee;
+      --brand-blue-dark: #0f4bc4;
+      --brand-blue-darker: #0d368b;
+      --brand-blue-light: #eef3fc;
+      --brand-blue-subtle: #f6f9fe;
+
+      /* Stripe/Adyen Inspired Contrast */
+      --text-main: #1a1f36;
+      --text-secondary: #424770;
+      --text-muted: #697386;
+
+      /* Backgrounds & Borders */
+      --bg-page: #f7f9fc;
+      --bg-surface: #ffffff;
+      --bg-code: #f3f5f9;
+      --border-subtle: #e6ebf1;
+      --border-light: #c0c8d1;
+
+      /* Semantic colors */
+      --success-bg: #e3f6ea;
+      --success-text: #0b7a39;
+      --success-border: #b1dfc3;
+
+      --error-bg: #fae1e1;
+      --error-text: #b81e1e;
+      --error-border: #f0b0b0;
+
+      --warning-bg: #fff4d4;
+      --warning-text: #a15d04;
+      --warning-border: #fadc8e;
+
+      /* Shadows & UI */
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02), 0 1px 0 rgba(0, 0, 0, 0.02);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+      --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.06), 0 4px 8px rgba(0, 0, 0, 0.04);
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 100px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text-main);
+      background: var(--bg-page);
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ─── Hero Banner ─── */
+    .hero {
+      background: var(--bg-page);
+      color: var(--text-main);
+      padding: 64px 24px 40px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      line-height: 1.3;
+      color: var(--text-main);
+    }
+
+    /* Removed subtitle and callout-box styles */
+
+    /* ─── Sticky ToC Nav ─── */
+    .toc-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(247, 249, 252, 0.9);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0;
+      margin-bottom: 32px;
+    }
+
+    .toc-nav-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .toc-nav a {
+      display: flex;
+      align-items: center;
+      padding: 12px 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .toc-nav a:hover,
+    .toc-nav a:active,
+    .toc-nav a.active {
+      color: var(--brand-blue);
+      border-bottom-color: var(--brand-blue);
+      background: var(--brand-blue-subtle);
+    }
+
+    /* ─── Main Content ─── */
+    .container {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    section {
+      background: var(--bg-surface);
+      border-radius: var(--radius-md);
+      padding: 40px 48px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* ─── Typography ─── */
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 48px;
+      margin-bottom: 16px;
+    }
+
+    h4 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      margin-bottom: 20px;
+      color: var(--text-secondary);
+    }
+
+    ul,
+    ol {
+      padding-left: 28px;
+      margin-bottom: 24px;
+      color: var(--text-secondary);
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    li:last-child {
+      margin-bottom: 0;
+    }
+
+    strong {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    a {
+      color: var(--brand-blue);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    a:hover {
+      color: var(--brand-blue-dark);
+      text-decoration: underline;
+    }
+
+    /* ─── Callouts / Blockquotes ─── */
+    blockquote {
+      background: var(--brand-blue-light);
+      border-left: 4px solid var(--brand-blue);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 20px 24px;
+      margin: 28px 0;
+    }
+
+    blockquote p {
+      margin-bottom: 0;
+      color: var(--brand-blue-darker);
+      font-weight: 500;
+    }
+
+    /* ─── Tables ─── */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 28px 0;
+      border-radius: var(--radius-md);
+      box-shadow: 0 0 0 1px var(--border-subtle);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1rem;
+      text-align: left;
+    }
+
+    th {
+      background: var(--bg-page);
+      color: var(--text-main);
+      font-weight: 600;
+      padding: 16px 20px;
+      border-bottom: 2px solid var(--border-light);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:nth-child(even) td {
+      background: var(--bg-page);
+    }
+
+    /* ─── Inline Code ─── */
+    code {
+      font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+      background: var(--bg-code);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.9em;
+      color: var(--brand-blue-dark);
+      font-weight: 500;
+    }
+
+    /* ─── Mermaid Diagrams ─── */
+    .mermaid-wrapper {
+      background: var(--bg-page);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 24px 24px;
+      margin: 24px 0;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .mermaid {
+      font-family: 'Inter', sans-serif !important;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
+    .mermaid svg {
+      max-width: 100% !important;
+      height: auto !important;
+      /* explicitly removing width: 100% so tall diagrams stay native size 
+         while wide diagrams hit max-width down to container */
+    }
+
+    /* ─── Horizontal Rule ─── */
+    hr {
+      border: none;
+      height: 1px;
+      background: var(--border-subtle);
+      margin: 48px 0;
+    }
+
+    /* ─── FAQ Section Enhancements ─── */
+    .faq-q {
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--brand-blue-darker);
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+
+    .faq-a {
+      background: var(--bg-page);
+      border-left: 3px solid var(--brand-blue-light);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+    }
+
+    .faq-a p:last-child {
+      margin-bottom: 0;
+    }
+
+    .faq-category {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--brand-blue);
+      background: var(--brand-blue-light);
+      padding: 8px 16px;
+      border-radius: 20px;
+      margin-top: 48px;
+      margin-bottom: 16px;
+    }
+
+    /* First FAQ category doesn't need top margin */
+    hr+.faq-category,
+    section h2+.faq-category {
+      margin-top: 16px;
+    }
+
+    /* ─── Status Badges for Tables ─── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .badge-yes {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid var(--success-border);
+    }
+
+    .badge-no {
+      background: var(--error-bg);
+      color: var(--error-text);
+      border: 1px solid var(--error-border);
+    }
+
+    .badge-warning {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1px solid var(--warning-border);
+    }
+
+    /* ─── Footer Section ─── */
+    .footer-card {
+      background: linear-gradient(135deg, var(--brand-blue-subtle) 0%, var(--brand-blue-light) 100%);
+      border: 1px solid var(--brand-blue-light);
+      border-radius: var(--radius-lg);
+      padding: 32px 40px;
+      margin-top: 48px;
+    }
+
+    .footer-card p {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--brand-blue-darker);
+      margin-bottom: 16px;
+    }
+
+    .footer-card ul {
+      margin: 0;
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .footer-card li {
+      margin: 0;
+    }
+
+    .footer-card a {
+      display: flex;
+      align-items: center;
+      background: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      color: var(--brand-blue);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .footer-card a:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--brand-blue-light);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    /* ─── Responsive Media Queries ─── */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 56px 20px 48px;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      section {
+        padding: 40px 24px;
+        border-radius: var(--radius-md);
+      }
+
+      .container {
+        padding: 24px 16px 64px;
+      }
+
+      h2 {
+        font-size: 1.7rem;
+      }
+
+      .mermaid-wrapper {
+        padding: 20px 12px;
+        justify-content: flex-start;
+        /* Prevent cut-off diagrams */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+
+      section {
+        padding: 32px 20px;
+      }
+
+      body {
+        font-size: 16px;
+      }
+    }
+
+    /* ─── Print Styles ─── */
+    @media print {
+      body {
+        background: white;
+      }
+
+      .toc-nav {
+        display: none;
+      }
+
+      section {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+        padding: 24px;
+      }
+
+      .hero {
+        background: none !important;
+        color: black;
+        padding: 0;
+        margin-bottom: 40px;
+      }
+
+      .mermaid-wrapper {
+        border-color: #ddd;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HERO -->
+  <header class="hero">
+    <h1>🧩 Xendit Components <br> A Practical Guide for Ops Teams</h1>
+  </header>
+
+  <!-- STICKY NAVIGATION -->
+  <nav class="toc-nav">
+    <div class="toc-nav-inner">
+      <a href="#section-1">1. Big Picture</a>
+      <a href="#section-2">2. End-to-End</a>
+      <a href="#section-3">3. Components</a>
+      <a href="#section-4">4. Front-End</a>
+      <a href="#section-5">5. Back-End</a>
+      <a href="#section-6">6. Styling</a>
+      <a href="#section-7">7. Security</a>
+      <a href="#section-8">8. FAQs</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- SECTION 1 -->
+    <section id="section-1">
+      <h2>1. The Big Picture: What Is This Demo Store?</h2>
+      <p>This repository is a <strong>working sample online store</strong> called <strong>"Plushxie"</strong> — a
+        fictional plushie shop that demonstrates <strong>how to integrate Xendit's payment features</strong> into a
+        website.</p>
+
+      <h3>What the demo store shows</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>What it demonstrates</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Product browsing</strong></td>
+              <td>Customers browse plushies, add them to a cart</td>
+            </tr>
+            <tr>
+              <td><strong>Multi-currency</strong></td>
+              <td>Prices adjust for 6 currencies (IDR, MYR, PHP, SGD, THB, VND)</td>
+            </tr>
+            <tr>
+              <td><strong>3 integration methods</strong></td>
+              <td>Payment Link, Xendit Components, and Legacy Invoice</td>
+            </tr>
+            <tr>
+              <td><strong>3 payment flows</strong></td>
+              <td>Pay (one-time), Save (save card for later), Pay &amp; Save (both)</td>
+            </tr>
+            <tr>
+              <td><strong>Checkout page</strong></td>
+              <td>Custom-branded checkout using Xendit Components</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <blockquote>
+        <p><strong>Live Demo:</strong> <a href="https://demo-store.xendit.co" target="_blank"
+            rel="noopener noreferrer">https://demo-store.xendit.co</a></p>
+      </blockquote>
+
+      <h3>Architecture overview</h3>
+      <div class="mermaid-wrapper">
+        <pre class="mermaid">
+graph LR
+    subgraph Browser["Customer's Browser"]
+        A["🛒 Store Page"] --> B["💳 Checkout Page"]
+        B --> C["🧩 Xendit Components"]
+    end
+    subgraph Server["Merchant's Server"]
+        D["📦 Express Server"]
+    end
+    subgraph XenditSys["Xendit"]
+        E["🔐 Sessions API"]
+        F["💰 Payment Processing"]
+    end
+    B -- "POST /api/checkout" --> D
+    D -- "Create Session" --> E
+    E -- "components_sdk_key" --> D
+    D -- "Return key" --> B
+    C -- "Card data (secure iframe)" --> F
+    </pre>
+      </div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section id="section-2">
+      <h2>2. How the Demo Store Works (End to End)</h2>
+      <p>A step-by-step journey of a customer named <strong>Ayu</strong> buying a plushie:</p>
+
+      <ol>
+        <li><strong>Ayu browses the store</strong> — Picks the "Joyful Badger" ($20), clicks <strong>"Add to
+            Cart"</strong>.</li>
+        <li><strong>Ayu clicks "Checkout"</strong> — The store sends cart details (items, quantity, currency) to the
+          merchant's server.</li>
+        <li><strong>The server talks to Xendit</strong> — Calls the <strong>Xendit Sessions API</strong> to create a
+          payment session:
+          <ul>
+            <li><strong>Payment Link</strong> → Returns a URL; Ayu is redirected to Xendit's checkout page.</li>
+            <li><strong>Components</strong> → Returns a <code>components_sdk_key</code>; payment form appears on the
+              merchant's own page.</li>
+            <li><strong>Invoice (Legacy)</strong> → Returns a URL; similar to Payment Link using the older API.</li>
+          </ul>
+        </li>
+        <li><strong>Ayu pays</strong> — Enters card details (on the merchant's page for Components, on Xendit's page for
+          Payment Link).</li>
+        <li><strong>Success</strong> — Ayu sees "Payment Successful".</li>
+      </ol>
+
+      <h3>End-to-end flow diagram</h3>
+      <div class="mermaid-wrapper">
+        <pre class="mermaid">
+sequenceDiagram
+    actor Ayu as 🧑 Ayu (Customer)
+    participant Store as 🛒 Merchant Website
+    participant Server as 📦 Merchant Server
+    participant Xendit as 🔐 Xendit API
+
+    Ayu->>Store: Browses products, adds to cart
+    Ayu->>Store: Clicks "Checkout"
+    Store->>Server: POST /api/checkout (cart, currency, flow)
+    Server->>Xendit: Create Session (mode: COMPONENTS)
+    Xendit-->>Server: Returns components_sdk_key
+    Server-->>Store: Sends components_sdk_key
+    Store->>Store: Initialises Xendit Components SDK
+    Store->>Ayu: Shows secure card input form
+    Ayu->>Store: Fills in card details
+    Ayu->>Store: Clicks "Pay Now"
+    Store->>Xendit: Card data sent directly (via secure iframe)
+    Xendit-->>Store: Payment success event
+    Store->>Ayu: Shows "Payment Successful!" page
+    </pre>
+      </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section id="section-3">
+      <h2>3. What Are Xendit Components?</h2>
+      <p><strong>Xendit Components</strong> lets merchants accept payments <strong>directly on their own
+          website</strong>. Instead of redirecting the customer to a Xendit-hosted page, a secure payment form is
+        embedded right inside the merchant's checkout page.</p>
+
+      <h3>Why do merchants want this?</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Benefit</th>
+              <th>Explanation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Brand consistency</strong></td>
+              <td>Payment form lives on the merchant's site — looks and feels like theirs</td>
+            </tr>
+            <tr>
+              <td><strong>Higher conversion</strong></td>
+              <td>No redirect means fewer drop-offs</td>
+            </tr>
+            <tr>
+              <td><strong>Full layout control</strong></td>
+              <td>Merchant decides where and how the form appears</td>
+            </tr>
+            <tr>
+              <td><strong>Still secure</strong></td>
+              <td>Card details handled securely by Xendit, not the merchant</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>How is it different from Payment Link?</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Aspect</th>
+              <th>Payment Link</th>
+              <th>Xendit Components</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Where customer pays</strong></td>
+              <td>Xendit's hosted page (redirected)</td>
+              <td>Merchant's own website</td>
+            </tr>
+            <tr>
+              <td><strong>Look and feel</strong></td>
+              <td>Xendit's branding</td>
+              <td>Merchant's branding</td>
+            </tr>
+            <tr>
+              <td><strong>Setup effort</strong></td>
+              <td>Minimal — just redirect</td>
+              <td>Moderate — needs front-end embedding</td>
+            </tr>
+            <tr>
+              <td><strong>Customisation</strong></td>
+              <td>Limited</td>
+              <td>Full — merchant controls styling and layout</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart LR
+    subgraph LinkFlow ["Payment Link Flow"]
+        A1["🧑 Customer"] --> A2["🛒 Merchant Site"]
+        A2 -- "Redirect ↗️" --> A3["💳 Xendit Checkout Page"]
+        A3 -- "Redirect back" --> A4["✅ Merchant Success Page"]
+    end
+    subgraph CompFlow ["Xendit Components Flow"]
+        B1["🧑 Customer"] --> B2["🛒 Merchant Site + 🧩 Embedded Payment Form"]
+        B2 --> B3["✅ Merchant Success Page"]
+    end
+    style A3 fill:#fef3c7,stroke:#d97706
+    style B2 fill:#dcfce7,stroke:#16a34a
+    </pre>
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section id="section-4">
+      <h2>4. How Components Work — The Front-End (What the Customer Sees)</h2>
+      <p>The <strong>front-end</strong> is everything in the customer's browser — the visible part of the website.</p>
+
+      <h3>Step-by-step breakdown</h3>
+      <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart TD
+    A["1. Checkout page loads"] --> B["2. Page sends components_sdk_key to Xendit SDK"]
+    B --> C["3. Xendit creates secure card form inside hidden iframe"]
+    C --> D["4. Form appears on merchant's page"]
+    D --> E["5. Customer fills in card details"]
+    E --> F["6. Customer clicks 'Pay Now'"]
+    F --> G["7. Xendit processes payment securely"]
+    G --> H{"8. Outcome?"}
+    H -- "✅ Success" --> I["Show 'Payment Successful!' page"]
+    H -- "❌ Error" --> J["Show error message, allow retry"]
+    
+    style A fill:#e0f2fe,stroke:#0284c7
+    style D fill:#e0f2fe,stroke:#0284c7
+    style I fill:#dcfce7,stroke:#16a34a
+    style J fill:#fee2e2,stroke:#dc2626
+    </pre>
+      </div>
+
+      <h3>Key events the front-end listens for</h3>
+      <p>These are status signals from Xendit that tell the page what to show:</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>What it means</th>
+              <th>What the page does</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>init</code></td>
+              <td>Components is ready</td>
+              <td>Show the card input form</td>
+            </tr>
+            <tr>
+              <td><code>submission-ready</code></td>
+              <td>All required fields filled</td>
+              <td>Enable the "Pay Now" button</td>
+            </tr>
+            <tr>
+              <td><code>submission-not-ready</code></td>
+              <td>Fields missing or invalid</td>
+              <td>Disable the "Pay Now" button</td>
+            </tr>
+            <tr>
+              <td><code>submission-begin</code></td>
+              <td>Payment processing</td>
+              <td>Show a loading spinner</td>
+            </tr>
+            <tr>
+              <td><code>submission-end</code></td>
+              <td>Processing finished</td>
+              <td>Hide the spinner</td>
+            </tr>
+            <tr>
+              <td><code>session-complete</code></td>
+              <td>Payment succeeded</td>
+              <td>Show "Success!" page</td>
+            </tr>
+            <tr>
+              <td><code>fatal-error</code></td>
+              <td>Critical failure</td>
+              <td>Show an error message</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Event lifecycle diagram</h3>
+      <div class="mermaid-wrapper">
+        <pre class="mermaid">
+stateDiagram-v2
+    [*] --> Loading: Page loads
+    Loading --> Ready: init event
+    Ready --> FormNotReady: submission-not-ready
+    Ready --> FormReady: submission-ready
+    FormNotReady --> FormReady: submission-ready
+    FormReady --> FormNotReady: submission-not-ready
+    FormReady --> Submitting: Customer clicks Pay Now
+    Submitting --> Processing: submission-begin
+    Processing --> FormReady: submission-end (failed, can retry)
+    Processing --> Success: session-complete
+    Loading --> Error: fatal-error
+    Processing --> Error: fatal-error
+    Success --> [*]
+    </pre>
+      </div>
+    </section>
+
+    <!-- SECTION 5 -->
+    <section id="section-5">
+      <h2>5. How Components Work — The Back-End (What the Merchant's Server Does)</h2>
+      <p>The <strong>back-end</strong> is the merchant's server — the part the customer never sees.</p>
+
+      <h3>What the server does</h3>
+      <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart TD
+    A["📥 Receive checkout request from front-end"] --> B["🔑 Pick appropriate API key for currency"]
+    B --> C["📝 Build session request for Xendit"]
+    C --> D["Items + amounts"]
+    C --> E["Currency + country"]
+    C --> F["mode: COMPONENTS"]
+    C --> G["Allowed website URL (origins)"]
+    D & E & F & G --> H["📤 Send request to Xendit Sessions API"]
+    H --> I["📨 Receive components_sdk_key from Xendit"]
+    I --> J["↩️ Send key back to front-end"]
+    
+    style A fill:#fef3c7,stroke:#d97706
+    style H fill:#e0f2fe,stroke:#0284c7
+    style J fill:#dcfce7,stroke:#16a34a
+    </pre>
+      </div>
+
+      <h3>Important details for merchants</h3>
+      <ol>
+        <li><strong>API key stays on the server.</strong> It is a secret — never sent to the browser.</li>
+        <li><strong><code>components_sdk_key</code> goes to the front-end.</strong> Temporary, session-specific key that
+          only allows displaying the payment form.</li>
+        <li><strong>Origins must be declared.</strong> The session specifies which website URL can use Components (e.g.,
+          <code>https://mystore.com</code>).
+        </li>
+        <li><strong>Multi-currency support.</strong> Each currency (IDR, PHP, MYR, etc.) uses its own API key via
+          environment variables.</li>
+      </ol>
+
+      <h3>What stays secret vs. what gets shared</h3>
+      <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart LR
+    subgraph SecretZone ["🔒 Server Only (Secret)"]
+        A["Xendit API Key"]
+    end
+    subgraph SharedZone ["🔓 Shared with Browser (Temporary)"]
+        B["components_sdk_key"]
+    end
+    subgraph NoGoZone ["❌ Never Shared"]
+        C["Customer's Card Data"]
+    end
+    
+    A -- "Used to create session" --> B
+    B -- "Used to display form" --> D["Secure Payment Form"]
+    D -- "Captured in iframe" --> C
+    
+    style A fill:#fee2e2,stroke:#dc2626
+    style B fill:#fef3c7,stroke:#d97706
+    style C fill:#fee2e2,stroke:#dc2626
+    </pre>
+      </div>
+    </section>
+
+    <!-- SECTION 6 -->
+    <section id="section-6">
+      <h2>6. How Xendit Components Can Be Styled</h2>
+      <p>Merchants can <strong>style Components to match their brand</strong>. There are two layers of customisation:
+      </p>
+
+      <h3>Layer 1: The container (fully customisable)</h3>
+      <p>The wrapper around the payment form. Merchant has <strong>complete control</strong> over:</p>
+      <ul>
+        <li>Background colour, border, border radius</li>
+        <li>Padding, spacing, width, positioning</li>
+        <li>Shadow effects</li>
+      </ul>
+
+      <h3>Layer 2: The input fields (customisable via appearance settings)</h3>
+      <p>Card input fields live inside a <strong>secure Xendit iframe</strong>, but the merchant can still customise
+        passing variables in the SDK configuration:</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>What can be customised</th>
+              <th>Examples</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Text colour</strong></td>
+              <td>Match brand colour (e.g., <code>#252525</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Font family</strong></td>
+              <td>Same font as the site (e.g., <code>Inter</code>, <code>Roboto</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Placeholder text colour</strong></td>
+              <td>Subtle hints (e.g., <code>#7d7d7d</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Custom web fonts</strong></td>
+              <td>Load Google Fonts or any external web font</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Demo store example</h3>
+      <ul>
+        <li><strong>Text colour:</strong> <code>#252525</code> (dark charcoal)</li>
+        <li><strong>Font:</strong> Inter</li>
+        <li><strong>Placeholder colour:</strong> <code>#7d7d7d</code></li>
+        <li><strong>Font loading:</strong> Fetch from Google Fonts</li>
+      </ul>
+
+      <h3>The two styling layers visualised</h3>
+      <div class="mermaid-wrapper">
+        <pre class="mermaid">
+block-beta
+    columns 1
+    block:page["🖥️ Merchant's Checkout Page"]
+        columns 1
+        block:container["Layer 1: Container (merchant controls fully CSS)\nBackground colour, border, padding, width, shadow"]
+            columns 1
+            block:iframe["Layer 2: Secure Xendit iframe (styled via appearance config)\nText colour, font family, placeholder colour, custom web fonts"]
+                columns 1
+                A["Card Number: 4111 1111 1111 1111"]
+                B["Expiry: 12/27 | CVV: •••"]
+            end
+        end
+        C["💳  Pay Now — IDR 300,000 (merchant's own button)"]
+    end
+    
+    style page fill:#f8fafc,stroke:#cbd5e1
+    style container fill:#eef3fc,stroke:#1762ee,stroke-width:2px,color:#1e3a8a
+    style iframe fill:#ffffff,stroke:#94a3b8,stroke-dasharray:5 5,color:#475569
+    style C fill:#1762ee,color:#ffffff,stroke:#1762ee
+    </pre>
+      </div>
+
+      <blockquote>
+        <p><strong>Note:</strong> The "Pay Now" button is <strong>not</strong> part of Xendit Components — the merchant
+          creates their own button and calls <code>submit()</code> when clicked. This gives full CSS control over text,
+          colour, and behaviour.</p>
+      </blockquote>
+    </section>
+
+    <!-- SECTION 7 -->
+    <section id="section-7">
+      <h2>7. Security &amp; PCI-DSS Compliance</h2>
+
+      <h3>What is PCI-DSS?</h3>
+      <p><strong>Payment Card Industry Data Security Standard</strong> — strict security rules for businesses handling
+        credit card data. Non-compliance can result in:</p>
+      <ul>
+        <li>Heavy fines from card networks (Visa, Mastercard, etc.)</li>
+        <li>Loss of ability to accept card payments</li>
+        <li>Reputational damage from data breaches</li>
+      </ul>
+
+      <h3>How Xendit Components help</h3>
+      <p><strong>The merchant's website never touches card data.</strong> Card details are entered inside a secure
+        Xendit-hosted iframe and sent directly to Xendit — bypassing the merchant's server entirely.</p>
+
+      <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart TD
+    A["🧑 Customer types card number"] --> B["🔐 Xendit Secure iframe\n(inside merchant's page)"]
+    B -- "Encrypted, sent directly" --> C["🏦 Xendit Servers\n(PCI-DSS Level 1 Certified)"]
+    B -. "❌ Card data NEVER goes here" .-> D["📦 Merchant's Server"]
+    B -. "❌ Card data NEVER accessible here" .-> E["🌐 Merchant's JavaScript"]
+    C --> F["✅ Payment processed securely"]
+    
+    style B fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+    style C fill:#dcfce7,stroke:#16a34a
+    style D fill:#fee2e2,stroke:#dc2626,stroke-dasharray:5 5
+    style E fill:#fee2e2,stroke:#dc2626,stroke-dasharray:5 5
+    style F fill:#dcfce7,stroke:#16a34a
+    </pre>
+      </div>
+
+      <h3>Impact on the merchant</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Without Xendit Components</th>
+              <th>With Xendit Components</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Merchant builds their own card form</td>
+              <td>Xendit provides a secure, ready-made form</td>
+            </tr>
+            <tr>
+              <td>Card data passes through merchant's server</td>
+              <td>Card data goes directly to Xendit</td>
+            </tr>
+            <tr>
+              <td>Must pass PCI-DSS audits (expensive, complex)</td>
+              <td>PCI-DSS scope <strong>drastically reduced</strong></td>
+            </tr>
+            <tr>
+              <td>Risk of data breaches</td>
+              <td>Sensitive data never touches merchant's systems</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Comparison: With vs. Without</h3>
+      <div class="mermaid-wrapper">
+        <pre class="mermaid">
+flowchart LR
+    subgraph FlowBad ["❌ Without Components"]
+        W1["Customer"] --> W2["Merchant's Card Form"]
+        W2 --> W3["Merchant's Server\n(sees card data! ⚠️)"]
+        W3 --> W4["Payment Processor"]
+    end
+    subgraph FlowGood ["✅ With Xendit Components"]
+        C1["Customer"] --> C2["Xendit Secure iframe"]
+        C2 --> C4["Xendit Servers"]
+        C3["Merchant's Server\n(never sees card data ✅)"] -. "No card data" .-> C2
+    end
+    
+    style W3 fill:#fee2e2,stroke:#dc2626
+    style C2 fill:#dcfce7,stroke:#16a34a
+    style C3 fill:#dcfce7,stroke:#16a34a
+    </pre>
+      </div>
+
+      <h3>Key talking points for merchant conversations</h3>
+      <ol>
+        <li><strong>"Do I need PCI-DSS compliance?"</strong> — Using Components drastically reduces PCI burden.
+          Merchants benefit from Xendit's PCI-DSS Level 1 certification.</li>
+        <li><strong>"Is it safe?"</strong> — Yes. Card data is captured in a secure iframe and sent directly to Xendit
+          over encrypted connections.</li>
+        <li><strong>"What about the <code>components_sdk_key</code>?"</strong> — Temporary, session-specific. Cannot be
+          used to make payments or access card data.</li>
+        <li><strong>"What about the API key?"</strong> — Stays on the server. Never exposed to the browser.</li>
+      </ol>
+    </section>
+
+    <!-- SECTION 8 -->
+    <section id="section-8">
+      <h2>8. Merchant FAQs</h2>
+
+      <div class="faq-category">General</div>
+
+      <div class="faq-q">Q: Does the customer get redirected when using Components?</div>
+      <div class="faq-a">
+        <p>No. The customer stays on the merchant's website. The payment form is embedded in the page.</p>
+      </div>
+
+      <div class="faq-q">Q: Can I use Components for all payment methods?</div>
+      <div class="faq-a">
+        <p>Components currently support <strong>cards</strong>. The SDK lists available channels; merchants display
+          forms for active channels on their account.</p>
+      </div>
+
+      <div class="faq-q">Q: What currencies are supported?</div>
+      <div class="faq-a">
+        <p>Depends on the merchant's Xendit account. The demo supports <strong>IDR, MYR, PHP, SGD, THB, VND</strong>.
+        </p>
+      </div>
+
+      <div class="faq-q">Q: What payment flows are supported?</div>
+      <div class="faq-a">
+        <ul>
+          <li><strong>Pay</strong> — One-time payment</li>
+          <li><strong>Save</strong> — Save a payment method (no charge)</li>
+          <li><strong>Pay &amp; Save</strong> — Pay and save the method</li>
+        </ul>
+      </div>
+
+      <hr>
+      <div class="faq-category">Integration &amp; Setup</div>
+
+      <div class="faq-q">Q: How hard is it to integrate?</div>
+      <div class="faq-a">
+        <p>Moderate effort — more than Payment Link, but gives full control over checkout. Requires:</p>
+        <ol>
+          <li>A server calling the Xendit Sessions API</li>
+          <li>A front-end loading <code>xendit-components-web</code> to render the form</li>
+        </ol>
+      </div>
+
+      <div class="faq-q">Q: Does the merchant need to install anything?</div>
+      <div class="faq-a">
+        <p>The dev team installs the <code>xendit-components-web</code> npm package. No plugins or extensions needed.
+        </p>
+      </div>
+
+      <div class="faq-q">Q: Does it only work with React?</div>
+      <div class="faq-a">
+        <p>No. Works with <strong>any</strong> front-end framework or plain HTML/JavaScript. The SDK returns standard
+          HTML elements.</p>
+      </div>
+
+      <div class="faq-q">Q: Is there a sandbox/test mode?</div>
+      <div class="faq-a">
+        <p>Yes. Merchants use test API keys for simulated transactions. The <a href="https://demo-store.xendit.co"
+            target="_blank">live demo</a> itself is a test environment.</p>
+      </div>
+
+      <hr>
+      <div class="faq-category">Styling &amp; Customisation</div>
+
+      <div class="faq-q">Q: Can the merchant change the look of the form?</div>
+      <div class="faq-a">
+        <p>Yes, at two levels:</p>
+        <ol>
+          <li><strong>Container</strong> — Full CSS control (colours, borders, spacing, size)</li>
+          <li><strong>Input fields</strong> — Text colour, font, placeholder colour, custom web fonts</li>
+        </ol>
+      </div>
+
+      <div class="faq-q">Q: Can the merchant move or resize the form?</div>
+      <div class="faq-a">
+        <p>Yes. The form is an HTML element inside a container. The merchant controls size and position with CSS.</p>
+      </div>
+
+      <div class="faq-q">Q: Can the merchant change the button?</div>
+      <div class="faq-a">
+        <p>Yes. The "Pay Now" button is <strong>not</strong> part of Xendit Components — the merchant creates their own
+          button and calls <code>submit()</code>.</p>
+      </div>
+
+      <hr>
+      <div class="faq-category">Security</div>
+
+      <div class="faq-q">Q: Does the merchant see or store card numbers?</div>
+      <div class="faq-a">
+        <p><strong>No.</strong> Card data is entered inside a secure Xendit-hosted iframe. The merchant's website and
+          server never access it.</p>
+      </div>
+
+      <div class="faq-q">Q: Do merchants still need PCI-DSS compliance?</div>
+      <div class="faq-a">
+        <p>Components <strong>significantly reduce</strong> PCI scope. Merchants should still follow basic security
+          practices (HTTPS, software updates).</p>
+      </div>
+
+      <div class="faq-q">Q: What happens on a payment error?</div>
+      <div class="faq-a">
+        <p>The SDK fires an error event. The customer can retry without starting over.</p>
+      </div>
+
+      <div class="faq-q">Q: Is the <code>components_sdk_key</code> sensitive?</div>
+      <div class="faq-a">
+        <p>Treat it as sensitive. It's temporary and session-specific — don't log, save, or share it.</p>
+      </div>
+
+      <hr>
+      <div class="faq-category">Troubleshooting</div>
+
+      <div class="faq-q">Q: Components form isn't showing up?</div>
+      <div class="faq-a">
+        <p>Common causes:</p>
+        <ol>
+          <li><strong>Wrong origin</strong> — URL must match the <code>origins</code> declared when creating the session
+          </li>
+          <li><strong>Expired SDK key</strong> — Sessions have a limited lifespan</li>
+          <li><strong>Network issues</strong> — Browser must reach Xendit's servers</li>
+        </ol>
+      </div>
+
+      <div class="faq-q">Q: "Pay Now" button is greyed out?</div>
+      <div class="faq-a">
+        <p>The customer hasn't filled all required fields. Button activates when all fields are valid.</p>
+      </div>
+
+      <div class="faq-q">Q: Payment failed after clicking "Pay Now"?</div>
+      <div class="faq-a">
+        <p>Possible reasons: card declined, network error, or 3D Secure cancelled. The customer can retry with the same
+          or a different card.</p>
+      </div>
+
+      <div class="faq-q">Q: Can the customer retry after a failure?</div>
+      <div class="faq-a">
+        <p>Yes. The form returns to its previous state — no need to start over.</p>
+      </div>
+    </section>
+
+    <!-- QUICK REFERENCE SECTION -->
+    <section id="section-ref">
+      <h2>Quick Reference: Integration Methods</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Session — Payment Link</th>
+              <th>Session — Components</th>
+              <th>Invoice (Legacy)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Customer stays on merchant site?</strong></td>
+              <td><span class="badge badge-no">❌ Redirected</span></td>
+              <td><span class="badge badge-yes">✅ Yes</span></td>
+              <td><span class="badge badge-no">❌ Redirected</span></td>
+            </tr>
+            <tr>
+              <td><strong>Brand customisation</strong></td>
+              <td>Limited</td>
+              <td><strong>Full</strong></td>
+              <td>Limited</td>
+            </tr>
+            <tr>
+              <td><strong>Setup effort</strong></td>
+              <td>Low</td>
+              <td>Moderate</td>
+              <td>Low</td>
+            </tr>
+            <tr>
+              <td><strong>Supported flows</strong></td>
+              <td>Pay, Save, Pay+Save</td>
+              <td>Pay, Save, Pay+Save</td>
+              <td>Pay only</td>
+            </tr>
+            <tr>
+              <td><strong>PCI-DSS scope reduction</strong></td>
+              <td><span class="badge badge-yes">✅ Full (Xendit-hosted)</span></td>
+              <td><span class="badge badge-yes">✅ Full (secure iframe)</span></td>
+              <td><span class="badge badge-yes">✅ Full (Xendit-hosted)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Recommended for</strong></td>
+              <td>Quick setup, simple needs</td>
+              <td><strong>Custom checkout experience</strong></td>
+              <td>Existing integrations only</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FOOTER LINKS -->
+    <div class="footer-card">
+      <p>📚 Need more help? Check the official resources:</p>
+      <ul>
+        <li><a href="https://docs.xendit.co/" target="_blank" rel="noopener noreferrer">Xendit Documentation</a></li>
+        <li><a href="https://docs.xendit.co/docs/components-overview" target="_blank"
+            rel="noopener noreferrer">Components Overview</a></li>
+        <li><a href="https://developers.xendit.co/" target="_blank" rel="noopener noreferrer">API Reference Guide</a>
+        </li>
+        <li><a href="https://github.com/xendit/demo-store" target="_blank" rel="noopener noreferrer">Demo Store Source
+            Code</a></li>
+      </ul>
+    </div>
+
+  </div><!-- /.container -->
+
+</body>
+
+</html>
