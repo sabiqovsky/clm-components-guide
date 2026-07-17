@@ -29,20 +29,20 @@ IDR, PHP, MYR, THB, VND, SGD, HKD, MXN — each mapped to a separate Xendit API 
 
 ```mermaid
 %%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#1d4ed8", "primaryTextColor": "#1e3a5f", "lineColor": "#1d4ed8", "edgeLabelBackground": "#ffffff", "fontSize": "16px"}}}%%
-flowchart LR
-    A["Customer\nBrowser"]
-    B["Demo Store\nFrontend"]
-    C["Demo Store\nServer"]
-    D["Xendit\nAPI"]
-    E["Xendit\nComponents iframe"]
+flowchart TD
+    A["Customer Browser"]
+    B["Demo Store Frontend"]
+    C["Demo Store Server"]
+    D["Xendit API"]
+    E["Xendit Components\nSecure iframe"]
 
     A -->|"1. Add to cart"| B
     B -->|"2. Create session"| C
-    C -->|"3. Sessions API POST"| D
-    D -->|"4. SDK key"| C
+    C -->|"3. POST /payment_session"| D
+    D -->|"4. Return SDK key"| C
     C -->|"5. SDK key"| B
     B -->|"6. Init SDK"| E
-    E -->|"7. Card data (direct)"| D
+    E -->|"7. Card data direct"| D
     D -->|"8. Payment result"| B
 
     style A fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f

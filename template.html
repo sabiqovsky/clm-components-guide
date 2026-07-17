@@ -613,6 +613,23 @@
     setTimeout(() => {
       window.mermaid.run({
         nodes: document.querySelectorAll('pre.mermaid'),
+      }).then(() => {
+        // Force white background on every rendered SVG — overrides Mermaid's internal dark rect
+        document.querySelectorAll('.mermaid-wrapper svg').forEach(svg => {
+          svg.style.background = '#ffffff';
+          // Also clear background on the first rect (Mermaid draws a bg rect)
+          const firstRect = svg.querySelector('rect');
+          if (firstRect) firstRect.setAttribute('fill', '#ffffff');
+        });
+      }).catch(() => {
+        // mermaid.run() may not return a promise in all versions — silent fallback
+        setTimeout(() => {
+          document.querySelectorAll('.mermaid-wrapper svg').forEach(svg => {
+            svg.style.background = '#ffffff';
+            const firstRect = svg.querySelector('rect');
+            if (firstRect) firstRect.setAttribute('fill', '#ffffff');
+          });
+        }, 500);
       });
     }, 50);
   }

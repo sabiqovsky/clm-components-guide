@@ -4,30 +4,44 @@ Components supports four distinct flows, all driven by session parameters.
 
 ## Flow Overview
 
+**Pay — one-time charge:**
+
 ```mermaid
 %%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#1d4ed8", "primaryTextColor": "#1e3a5f", "lineColor": "#1d4ed8", "edgeLabelBackground": "#ffffff", "fontSize": "16px"}}}%%
-flowchart TD
-    subgraph PAY["Pay — One-time charge"]
-        direction LR
-        P1["session_type: PAY"] --> P2["Customer charged once"]
-    end
-    subgraph SAVE["Save — Vault card, no charge"]
-        direction LR
-        S1["session_type: SAVE"] --> S2["Card tokenized, no charge"]
-    end
-    subgraph PAYSAVE["Pay + Save"]
-        direction LR
-        PS1["session_type: PAY\nallow_save: OPTIONAL"] --> PS2["Charged + card saved"]
-    end
-    subgraph SUB["Subscription — Recurring"]
-        direction LR
-        SB1["session_type: SUBSCRIPTION\n+ schedule config"] --> SB2["Recurring billing set up"]
-    end
+flowchart LR
+    P1["session_type: PAY"] --> P2["Customer charged once"]
+    style P1 fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
+    style P2 fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
+```
 
-    style PAY fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
-    style SAVE fill:#faf5ff,stroke:#7c3aed,color:#3b0764
-    style PAYSAVE fill:#fefce8,stroke:#ca8a04,color:#713f12
-    style SUB fill:#f0fdf4,stroke:#16a34a,color:#14532d
+**Save — tokenize card, no charge:**
+
+```mermaid
+%%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#1d4ed8", "primaryTextColor": "#1e3a5f", "lineColor": "#1d4ed8", "edgeLabelBackground": "#ffffff", "fontSize": "16px"}}}%%
+flowchart LR
+    S1["session_type: SAVE"] --> S2["Card tokenized, no charge"]
+    style S1 fill:#faf5ff,stroke:#7c3aed,color:#3b0764
+    style S2 fill:#faf5ff,stroke:#7c3aed,color:#3b0764
+```
+
+**Pay + Save — charge and optionally save:**
+
+```mermaid
+%%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#1d4ed8", "primaryTextColor": "#1e3a5f", "lineColor": "#1d4ed8", "edgeLabelBackground": "#ffffff", "fontSize": "16px"}}}%%
+flowchart LR
+    PS1["session_type: PAY\nallow_save: OPTIONAL"] --> PS2["Charged + card saved"]
+    style PS1 fill:#fefce8,stroke:#ca8a04,color:#713f12
+    style PS2 fill:#fefce8,stroke:#ca8a04,color:#713f12
+```
+
+**Subscription — recurring billing:**
+
+```mermaid
+%%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#1d4ed8", "primaryTextColor": "#1e3a5f", "lineColor": "#1d4ed8", "edgeLabelBackground": "#ffffff", "fontSize": "16px"}}}%%
+flowchart LR
+    SB1["session_type: SUBSCRIPTION\n+ schedule config"] --> SB2["Recurring billing set up"]
+    style SB1 fill:#f0fdf4,stroke:#16a34a,color:#14532d
+    style SB2 fill:#f0fdf4,stroke:#16a34a,color:#14532d
 ```
 
 ## Flow Reference

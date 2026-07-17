@@ -14,25 +14,33 @@
 
 ## Flow Comparison
 
+**Payment Link — customer is redirected away:**
+
 ```mermaid
 %%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#1d4ed8", "primaryTextColor": "#1e3a5f", "lineColor": "#1d4ed8", "edgeLabelBackground": "#ffffff", "fontSize": "16px"}}}%%
-flowchart TD
-    subgraph PL["Payment Link — Redirect flow"]
-        direction LR
-        A1["Customer"] -->|"clicks pay"| B1["Merchant page"]
-        B1 -->|"redirect"| C1["Xendit-hosted page"]
-        C1 -->|"complete"| D1["Back to merchant"]
-    end
+flowchart LR
+    A["Customer"] -->|"clicks pay"| B["Merchant page"]
+    B -->|"redirect"| C["Xendit-hosted page"]
+    C -->|"payment complete"| D["Back to merchant"]
 
-    subgraph CO["Components — Embedded flow"]
-        direction LR
-        A2["Customer"] -->|"clicks pay"| B2["Merchant page"]
-        B2 -->|"iframe renders inline"| C2["Xendit secure iframe"]
-        C2 -->|"complete"| B2
-    end
+    style A fill:#fefce8,stroke:#ca8a04,color:#713f12
+    style B fill:#fefce8,stroke:#ca8a04,color:#713f12
+    style C fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
+    style D fill:#fefce8,stroke:#ca8a04,color:#713f12
+```
 
-    style PL fill:#fefce8,stroke:#ca8a04,color:#713f12
-    style CO fill:#f0fdf4,stroke:#16a34a,color:#14532d
+**Components — customer stays on the merchant page:**
+
+```mermaid
+%%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#1d4ed8", "primaryTextColor": "#1e3a5f", "lineColor": "#1d4ed8", "edgeLabelBackground": "#ffffff", "fontSize": "16px"}}}%%
+flowchart LR
+    A["Customer"] -->|"clicks pay"| B["Merchant page"]
+    B -->|"iframe renders inline"| C["Xendit secure iframe"]
+    C -->|"payment complete"| B
+
+    style A fill:#f0fdf4,stroke:#16a34a,color:#14532d
+    style B fill:#f0fdf4,stroke:#16a34a,color:#14532d
+    style C fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
 ```
 
 ## When to Recommend Each
