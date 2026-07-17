@@ -137,7 +137,7 @@ npx serve docs/
 | `GOOGLE_CLIENT_ID` | Hardcoded in `template.html` | GCP OAuth Client ID (not a secret — it's public) |
 | `BUILD_ENCRYPTION_KEY` | GitHub Actions secret / local env | Used by `build.js` to encrypt content |
 
-The `GOOGLE_CLIENT_ID` is safe to commit — it only identifies the OAuth app. The GCP project's Internal consent screen ensures only Workspace users can authenticate.
+The `GOOGLE_CLIENT_ID` is safe to commit publicly — even in a public repo. It only identifies the OAuth app to Google; it cannot grant access or be used to impersonate users. The GCP project's **Internal** consent screen ensures only `@xendit.co` Workspace users can authenticate. The `BUILD_ENCRYPTION_KEY` (the actual secret that encrypts content) lives only in GitHub Actions secrets and is never in the repo.
 
 ### Deploy
 

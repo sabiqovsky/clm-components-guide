@@ -83,6 +83,14 @@ BROWSER TIME (template.html):
 
 **Rule:** Never change `build.js` encryption logic without updating `template.html` decryption to match, and vice versa. Always run `node test-decrypt.js` to verify the round-trip before committing.
 
+### Build Conventions
+
+1. **Section IDs:** Both section `id` attributes and TOC nav links use the **filename-based slug** (`01-big-picture.md` → `id="big-picture"`). Never derive IDs from heading text.
+
+2. **Template placeholders:** Use `.replaceAll()` (not `.replace()`) for all template substitutions in `build.js` — placeholders like `{{BUILD_TIME}}` and `{{SECTION_COUNT}}` may appear multiple times in `template.html`.
+
+3. **Verification before push:** Always run `node test-decrypt.js` (round-trip encrypt/decrypt check) before committing changes to `build.js` or `template.html`.
+
 ### What This Means
 - Without a `@xendit.co` Google account: content is AES-encrypted gibberish
 - With a valid account: normal reading experience
@@ -223,14 +231,22 @@ xendit-components-guide/
 │   └── 12-faq.md
 ├── build.js                    # Build script (reads .md → outputs encrypted HTML)
 ├── template.html               # HTML shell (auth UI, Mermaid loader, decryption logic)
+├── test-decrypt.js             # Crypto round-trip verification (run before push)
 ├── docs/                       # OUTPUT (GitHub Pages serves this)
 │   └── index.html              # Generated — do not edit directly
 ├── CLAUDE.md                   # This file
 ├── README.md                   # Setup + contributor guide
 └── .github/
     └── workflows/
-        └── build.yml           # Optional: auto-build on push
+        └── build.yml           # Auto-build on push
 ```
+
+## Git Workflow Notes
+
+- The GitHub Actions workflow auto-commits `docs/index.html` after every content/build change.
+- When pushing local changes that touch `docs/index.html`, expect a rebase conflict with the CI's previous commit.
+- Always resolve with: `git checkout --ours docs/index.html` (local build is more current).
+- Alternative: don't commit `docs/index.html` locally — let CI build and commit it. Only commit source files (`content/`, `build.js`, `template.html`).
 
 ## Content Editing Workflow (for CSMs)
 
@@ -242,21 +258,43 @@ xendit-components-guide/
 5. GitHub Pages deploys automatically
 ```
 
-### Mermaid Diagram Syntax (for editors)
+### Mermaid Rules
 
-In any `.md` file, write diagrams as fenced code blocks:
+**Style rules (MUST follow):**
+- NEVER use dark background colors on any node, subgraph, or actor
+- All fills must be light pastels: `#eff6ff`, `#f0fdf4`, `#fefce8`, `#fef2f2`, `#faf5ff`, `#dbeafe`
+- All text colors must meet WCAG AA (4.5:1 ratio against their background)
+- Text on light fills: use `#1e3a5f`, `#14532d`, `#713f12`, `#7f1d1d`, `#3b0764`
+
+**Layout rules:**
+- NEVER use multi-subgraph layouts with `direction LR` inside `flowchart TD` — they produce cramped, unreadable diagrams. Split into separate standalone diagrams instead.
+- `flowchart TD` for trees/vertical flows. `flowchart LR` only for simple 3-5 node linear flows.
+- Maximum 10-12 nodes per diagram. If more, split into multiple diagrams.
+- Avoid `\n` in node labels (causes box overflow). Use short single-line labels.
+- Remove emoji from node/actor labels (inconsistent cross-platform rendering).
+- Sequence diagrams: use `Note` blocks for detail instead of long inline message labels.
+
+**Required init directive (every diagram, line 2):**
+
+```
+%%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#1d4ed8", "primaryTextColor": "#1e3a5f", "lineColor": "#1d4ed8", "edgeLabelBackground": "#ffffff", "fontSize": "16px"}}}%%
+```
+
+**Background enforcement (3 layers — all required):**
+1. `%%{init}%%` directive per diagram (source-level)
+2. CSS: `.mermaid-wrapper svg { background: #ffffff !important }`
+3. JS: after `mermaid.run()` resolves, force `fill: #ffffff` on SVG root rect
+
+**Syntax for editors (in any `.md` file):**
 
 ~~~markdown
 ```mermaid
-sequenceDiagram
-    Customer->>Store: Add to cart
-    Store->>Xendit: Create session
-    Xendit-->>Store: SDK key
-    Store->>Customer: Show payment form
+%%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", ...}}}%%
+flowchart LR
+    A["Step 1"] --> B["Step 2"]
+    style A fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
 ```
 ~~~
-
-These render as interactive diagrams in the final guide.
 
 ## Execution Runbook
 
