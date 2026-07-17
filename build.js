@@ -101,18 +101,21 @@ function compileContent() {
 // ─── Encryption ───────────────────────────────────────────────────────────────
 
 function encrypt(plaintext, buildKey) {
-  // Derive a content salt from the build key (deterministic, used browser-side too)
-  const contentSalt = crypto
+  // Derive a browser-safe password from the build key.
+  // This derived value is injected into template.html at build time
+  // and used as the PBKDF2 password in the browser.
+  // The raw BUILD_ENCRYPTION_KEY is never embedded in the HTML.
+  const browserPassword = crypto
     .createHmac('sha256', buildKey)
-    .update('xendit-components-guide-content-salt-v1')
-    .digest();
+    .update('xendit-components-guide-v2')
+    .digest('base64');
 
   // Random salt + IV for PBKDF2 + AES-GCM
   const salt = crypto.randomBytes(16);
   const iv   = crypto.randomBytes(12);
 
-  // Derive AES key: PBKDF2(buildKey, salt, iters, keyLen, sha256)
-  const key = crypto.pbkdf2Sync(buildKey, salt, PBKDF2_ITERS, KEY_LEN, 'sha256');
+  // Derive AES key: PBKDF2(browserPassword, salt, iters, keyLen, sha256)
+  const key = crypto.pbkdf2Sync(browserPassword, salt, PBKDF2_ITERS, KEY_LEN, 'sha256');
 
   const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
   const encrypted = Buffer.concat([
@@ -126,7 +129,9 @@ function encrypt(plaintext, buildKey) {
 
   return {
     blob: packed.toString('base64'),
-    contentSalt: contentSalt.toString('base64'),
+    // browserPassword is injected as CONTENT_SALT into template.html
+    // The browser uses it directly as the PBKDF2 password
+    contentSalt: browserPassword,
   };
 }
 
