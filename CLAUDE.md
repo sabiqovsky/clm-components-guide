@@ -55,6 +55,34 @@ This is the `xendit-demo-store` repository — a full-stack React/Node.js demo a
 | 3. `hd` claim validation | JS checks hosted domain claim in Google's cryptographically-signed JWT | Requires forging Google's RSA signature |
 | 4. No content in source | Encrypted blob is opaque — view-source reveals nothing readable | N/A |
 
+### Crypto Contract (DO NOT BREAK)
+
+The encrypt (build-time) and decrypt (browser-time) formulas **must be identical**. Any change to one side requires the same change to the other, followed by a round-trip test.
+
+```
+BUILD TIME (build.js):
+  browserPassword = HMAC-SHA256(BUILD_ENCRYPTION_KEY, "xendit-components-guide-v2") → base64
+  salt            = randomBytes(16)
+  iv              = randomBytes(12)
+  key             = PBKDF2(browserPassword, salt, 100000, 32, SHA-256)
+  ciphertext      = AES-256-GCM.encrypt(plaintext, key, iv)
+  authTag         = cipher.getAuthTag()                    // 16 bytes
+  blob            = base64(salt + iv + authTag + ciphertext)
+  CONTENT_SALT    = browserPassword   ← injected into template.html
+
+BROWSER TIME (template.html):
+  password        = CONTENT_SALT_B64  ← injected at build time (same as browserPassword)
+  packed          = base64decode(ENCRYPTED_BLOB)
+  salt            = packed[0:16]
+  iv              = packed[16:28]
+  authTag         = packed[28:44]
+  ciphertext      = packed[44:]
+  key             = PBKDF2(password, salt, 100000, 32, SHA-256)
+  plaintext       = AES-256-GCM.decrypt(ciphertext + authTag, key, iv)
+```
+
+**Rule:** Never change `build.js` encryption logic without updating `template.html` decryption to match, and vice versa. Always run `node test-decrypt.js` to verify the round-trip before committing.
+
 ### What This Means
 - Without a `@xendit.co` Google account: content is AES-encrypted gibberish
 - With a valid account: normal reading experience

@@ -30,6 +30,11 @@ This runbook is operated by two Kiro CLI agents:
 
 4. **No assumptions:** Ambiguous requests → ask. Don't guess scope, audience, or technical approach.
 
+5. **Crypto contract:** Any change to `build.js` encryption OR `template.html` decryption requires:
+   - The other side updated to match the canonical formula in `CLAUDE.md`
+   - `node test-decrypt.js` passes before committing
+   - Never push if `test-decrypt.js` fails
+
 ### Handoff Protocol
 
 ```
@@ -212,24 +217,35 @@ After Gate 0 passes and variables are confirmed, planner:
 
 ### Key Design: Encryption/Decryption Flow
 
-```
-BUILD TIME:
-  plaintext_html = render(all .md files)
-  salt = crypto.randomBytes(16)
-  iv = crypto.randomBytes(12)
-  key = PBKDF2(process.env.BUILD_ENCRYPTION_KEY, salt, 100000, 'sha256', 256)
-  ciphertext = AES-256-GCM.encrypt(plaintext_html, key, iv)
-  output = base64(salt + iv + ciphertext + authTag)
+**This is the canonical formula. Both `build.js` and `template.html` must implement exactly this.**
 
-RUNTIME (browser):
-  user signs in → gets Google id_token
-  verify: JWT.decode(id_token).hd === "xendit.co"
-  salt, iv, ciphertext, authTag = decode(embedded_blob)
-  key = PBKDF2(BUILD_ENCRYPTION_KEY_EQUIVALENT, salt, 100000, 'sha256', 256)
-  plaintext = AES-256-GCM.decrypt(ciphertext, key, iv, authTag)
-  document.querySelector('main').innerHTML = plaintext
-  mermaid.run()
 ```
+BUILD TIME (build.js):
+  browserPassword = HMAC-SHA256(BUILD_ENCRYPTION_KEY, "xendit-components-guide-v2") → base64
+  salt            = randomBytes(16)
+  iv              = randomBytes(12)
+  key             = PBKDF2(browserPassword, salt, 100000, 32, SHA-256)
+  ciphertext      = AES-256-GCM.encrypt(plaintext_html, key, iv)
+  authTag         = cipher.getAuthTag()   // 16 bytes
+  blob            = base64(salt + iv + authTag + ciphertext)
+  CONTENT_SALT    = browserPassword       // injected into template.html
+
+BROWSER TIME (template.html):
+  password = CONTENT_SALT_B64             // same as browserPassword above
+  packed   = base64decode(ENCRYPTED_BLOB)
+  salt     = packed[0:16]
+  iv       = packed[16:28]
+  authTag  = packed[28:44]
+  cipher   = packed[44:]
+  key      = PBKDF2(password, salt, 100000, 32, SHA-256)
+  plaintext = AES-256-GCM.decrypt(cipher + authTag, key, iv)
+```
+
+**Crypto Contract Rules:**
+- Never change `build.js` encryption without updating `template.html` decryption to match
+- Never change `template.html` decryption without updating `build.js` encryption to match
+- Always run `node test-decrypt.js` to verify the round-trip before committing
+- `test-decrypt.js` must mirror both formulas exactly and pass before any push
 
 **Critical detail:** The decryption key derivation must use something that only valid `@xendit.co` users can produce. Two options:
 
@@ -238,13 +254,16 @@ RUNTIME (browser):
 | A. Shared secret embedded | Same `BUILD_ENCRYPTION_KEY` is in template.html (obfuscated). Auth check is a gate, but key is technically in source. | Good enough — GCP Internal OAuth is the real gate. Content can't be decrypted without passing Google's auth first since the key derivation also requires the valid token. |
 | B. Key derived from token | Derive key from `id_token.hd` + embedded salt. Only tokens with `hd=xendit.co` produce the correct key. Build.js pre-computes using known `hd` value. | Stronger — even if someone bypasses the JS auth check, they can't derive the correct key without a real token from the correct domain. |
 
-**Decision: Approach B** — key is derived from `hd` claim value ("xendit.co") + a secret salt (stored as GitHub Actions secret). Build.js uses the same formula. A forged or absent `hd` claim produces the wrong key → decryption fails.
+**Decision: Approach B (implemented above)** — browser password is derived from `BUILD_ENCRYPTION_KEY` via HMAC and injected at build time as `CONTENT_SALT`. The raw secret never appears in the HTML.
 
 ### Verification
 - [ ] `node build.js` exits 0 and produces `docs/index.html`
+- [ ] **`node test-decrypt.js` exits 0 — round-trip PASS** ← must run before any push
 - [ ] `docs/index.html` contains no plaintext guide content (verify with `grep`)
 - [ ] Opening `docs/index.html` in browser shows only sign-in button
 - [ ] File size of `docs/index.html` is reasonable (< 500KB)
+
+> **If `test-decrypt.js` fails:** The encrypt/decrypt formulas are mismatched. Fix both `build.js` and `template.html` to match the Crypto Contract above before proceeding. Do not push until this passes.
 
 ### 🚦 GATE 1: Build System Check
 
