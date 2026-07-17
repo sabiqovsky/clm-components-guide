@@ -4,15 +4,15 @@
 
 ```mermaid
 flowchart TD
-    A["🎨 Layer 1 — Container\nFull merchant CSS control\nSize · border · background · shadow"]
-    B["🖼 Layer 2 — Iframe Fields\nAppearance config via SDK\nText color · font · placeholder"]
-    C["🔒 Card Data — Xendit Only\nCard number · expiry · CVV\nSecure iframe, cannot be read"]
+    A["Layer 1 — Container\nFull merchant CSS control\nSize · border · background · shadow"]
+    B["Layer 2 — Iframe Fields\nAppearance config via SDK\nText color · font · placeholder"]
+    C["Card Data — Xendit Only\nCard number · expiry · CVV\nSecure iframe, cannot be read"]
 
     A --> B --> C
 
-    style A fill:#e8f0fe,stroke:#1762ee,color:#0d2a6b,font-size:15px
-    style B fill:#f3e8ff,stroke:#7c3aed,color:#3b0764,font-size:15px
-    style C fill:#e8f5e9,stroke:#22c55e,color:#14532d,font-size:15px
+    style A fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
+    style B fill:#faf5ff,stroke:#7c3aed,color:#3b0764
+    style C fill:#f0fdf4,stroke:#16a34a,color:#14532d
 ```
 
 ## Layer 1: Container CSS

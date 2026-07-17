@@ -4,10 +4,10 @@
 
 ```mermaid
 sequenceDiagram
-    actor Customer as 🧑 Customer
+    actor Customer
     participant Store as Merchant Frontend
     participant Server as Merchant Server
-    participant Xendit as ☁️ Xendit API
+    participant Xendit as Xendit API
 
     Customer->>Store: 1. Add to cart, click Pay
     Store->>Server: 2. POST /api/components/session
@@ -20,9 +20,9 @@ sequenceDiagram
     Customer->>Store: 7. Fill card details in iframe
     Customer->>Store: 8. Click Pay button
     Store->>Store: 9. session.submit()
-    Store-->>Xendit: 10. Card data (iframe → Xendit)
+    Store-->>Xendit: 10. Card data (iframe to Xendit)
     Xendit-->>Store: 11. session-complete event
-    Store->>Customer: 12. Show confirmation ✓
+    Store->>Customer: 12. Show confirmation
 ```
 
 ## Step-by-Step Breakdown

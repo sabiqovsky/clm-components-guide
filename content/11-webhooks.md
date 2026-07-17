@@ -10,9 +10,9 @@ The `session-complete` browser event tells your frontend the payment succeeded. 
 
 ```mermaid
 sequenceDiagram
-    participant Xendit as ☁️ Xendit
+    participant Xendit as Xendit
     participant Server as Merchant Server
-    participant DB as 🗄 Database
+    participant DB as Database
 
     Xendit->>Server: POST /webhooks/xendit
     Note right of Server: event: payment.succeeded

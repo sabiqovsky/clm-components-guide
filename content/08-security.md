@@ -10,24 +10,26 @@ When a merchant uses Components, Xendit's secure iframe handles all card data. T
 
 ```mermaid
 flowchart TD
-    subgraph Merchant["🏪 Merchant Domain (merchant.com)"]
+    subgraph Merchant["Merchant Domain (merchant.com)"]
         A["Merchant Page JS"]
         B["iframe element"]
     end
 
-    subgraph XenditDomain["🔒 Xendit Domain (xendit.co)"]
+    subgraph XenditDomain["Xendit Domain (xendit.co)"]
         C["Secure iframe — Card fields"]
         D["Xendit API Server"]
     end
 
     A -->|"SDK key only"| C
-    A -.->|"❌ Cross-origin blocked"| C
-    C -->|"✅ Card data (direct)"| D
+    A -.->|"Cross-origin blocked — no card access"| C
+    C -->|"Card data flows direct"| D
 
-    style Merchant fill:#fff8e1,stroke:#f59e0b,color:#78350f
-    style XenditDomain fill:#e8f0fe,stroke:#1762ee,color:#0d2a6b
-    style C fill:#1762ee,stroke:#0f4bc4,color:#ffffff
-    style D fill:#1762ee,stroke:#0f4bc4,color:#ffffff
+    style Merchant fill:#fefce8,stroke:#ca8a04,color:#713f12
+    style XenditDomain fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
+    style A fill:#fefce8,stroke:#ca8a04,color:#713f12
+    style B fill:#fefce8,stroke:#ca8a04,color:#713f12
+    style C fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
+    style D fill:#dbeafe,stroke:#1d4ed8,color:#1e3a5f
 ```
 
 The iframe is hosted on `xendit.co`. Browser cross-origin policy makes it impossible for merchant JavaScript to read values inside — enforced by the browser, not by policy.

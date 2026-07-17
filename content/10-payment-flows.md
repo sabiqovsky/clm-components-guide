@@ -6,27 +6,27 @@ Components supports four distinct flows, all driven by session parameters.
 
 ```mermaid
 flowchart TD
-    subgraph PAY["💳 Pay — One-time charge"]
+    subgraph PAY["Pay — One-time charge"]
         direction LR
-        P1["session_type: PAY"] --> P2["Customer charged"]
+        P1["session_type: PAY"] --> P2["Customer charged once"]
     end
-    subgraph SAVE["🔖 Save — Vault card"]
+    subgraph SAVE["Save — Vault card, no charge"]
         direction LR
-        S1["session_type: SAVE"] --> S2["Card tokenized\nno charge"]
+        S1["session_type: SAVE"] --> S2["Card tokenized, no charge"]
     end
-    subgraph PAYSAVE["💳🔖 Pay + Save"]
+    subgraph PAYSAVE["Pay + Save"]
         direction LR
         PS1["session_type: PAY\nallow_save: OPTIONAL"] --> PS2["Charged + card saved"]
     end
-    subgraph SUB["🔄 Subscription — Recurring"]
+    subgraph SUB["Subscription — Recurring"]
         direction LR
         SB1["session_type: SUBSCRIPTION\n+ schedule config"] --> SB2["Recurring billing set up"]
     end
 
-    style PAY fill:#e8f0fe,stroke:#1762ee,color:#0d2a6b
-    style SAVE fill:#f3e8ff,stroke:#7c3aed,color:#3b0764
-    style PAYSAVE fill:#fff8e1,stroke:#f59e0b,color:#78350f
-    style SUB fill:#e8f5e9,stroke:#22c55e,color:#14532d
+    style PAY fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
+    style SAVE fill:#faf5ff,stroke:#7c3aed,color:#3b0764
+    style PAYSAVE fill:#fefce8,stroke:#ca8a04,color:#713f12
+    style SUB fill:#f0fdf4,stroke:#16a34a,color:#14532d
 ```
 
 ## Flow Reference

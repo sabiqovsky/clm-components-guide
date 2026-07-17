@@ -9,20 +9,20 @@ flowchart LR
     A --> D["Components"]
 
     B --> E{"Need embedded\nor Save/Sub?"}
-    E -->|Yes| F["🔴 High priority\nMigrate now"]
-    E -->|No| G["🟡 Medium\nMigrate at next touch"]
+    E -->|Yes| F["High priority\nMigrate now"]
+    E -->|No| G["Medium priority\nMigrate at next touch"]
 
     C --> H{"Need Save/Sub\nor brand control?"}
-    H -->|Yes| I["🟡 Medium\nMigrate to Components"]
-    H -->|No| J["🟢 Low priority\nPayment Link is fine"]
+    H -->|Yes| I["Medium priority\nMigrate to Components"]
+    H -->|No| J["Low priority\nPayment Link is fine"]
 
-    D --> K["✅ Already done\nOptimize flows"]
+    D --> K["Already done\nOptimize flows"]
 
-    style F fill:#fef2f2,stroke:#ef4444,color:#7f1d1d
-    style G fill:#fff8e1,stroke:#f59e0b,color:#78350f
-    style I fill:#fff8e1,stroke:#f59e0b,color:#78350f
-    style J fill:#e8f5e9,stroke:#22c55e,color:#14532d
-    style K fill:#e8f5e9,stroke:#22c55e,color:#14532d
+    style F fill:#fef2f2,stroke:#dc2626,color:#7f1d1d
+    style G fill:#fefce8,stroke:#ca8a04,color:#713f12
+    style I fill:#fefce8,stroke:#ca8a04,color:#713f12
+    style J fill:#f0fdf4,stroke:#16a34a,color:#14532d
+    style K fill:#f0fdf4,stroke:#16a34a,color:#14532d
 ```
 
 ## Decision Matrix

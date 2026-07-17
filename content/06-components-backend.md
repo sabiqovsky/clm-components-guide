@@ -61,13 +61,13 @@ flowchart TD
     H --> I["POST to Xendit Sessions API"]
     I --> J{"Xendit response OK?"}
     J -->|No| K["500 Error"]
-    J -->|Yes| L["Return components_sdk_key ✓"]
+    J -->|Yes| L["Return components_sdk_key"]
 
-    style A fill:#f0f4ff,stroke:#1762ee,color:#0d2a6b
-    style L fill:#e8f5e9,stroke:#22c55e,color:#14532d
-    style C fill:#fef2f2,stroke:#ef4444,color:#7f1d1d
-    style F fill:#fef2f2,stroke:#ef4444,color:#7f1d1d
-    style K fill:#fef2f2,stroke:#ef4444,color:#7f1d1d
+    style A fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
+    style L fill:#f0fdf4,stroke:#16a34a,color:#14532d
+    style C fill:#fef2f2,stroke:#dc2626,color:#7f1d1d
+    style F fill:#fef2f2,stroke:#dc2626,color:#7f1d1d
+    style K fill:#fef2f2,stroke:#dc2626,color:#7f1d1d
 ```
 
 ## What to Keep Secret vs What to Share

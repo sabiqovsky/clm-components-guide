@@ -28,21 +28,27 @@ IDR, PHP, MYR, THB, VND, SGD, HKD, MXN — each mapped to a separate Xendit API 
 ## Architecture Overview
 
 ```mermaid
-graph TD
-    A["🧑 Customer Browser"] -->|"1 · Add to cart"| B["🖥 Demo Store Frontend"]
-    B -->|"2 · Create session"| C["⚙️ Demo Store Server"]
-    C -->|"3 · Sessions API POST"| D["☁️ Xendit API"]
-    D -->|"4 · components_sdk_key"| C
-    C -->|"5 · SDK key"| B
-    B -->|"6 · Init SDK"| E["🔒 Xendit Components iframe"]
-    E -->|"7 · Card data (direct)"| D
-    D -->|"8 · Payment result"| B
+flowchart LR
+    A["Customer\nBrowser"]
+    B["Demo Store\nFrontend"]
+    C["Demo Store\nServer"]
+    D["Xendit\nAPI"]
+    E["Xendit\nComponents iframe"]
 
-    style A fill:#f0f4ff,stroke:#1762ee,color:#0d2a6b
-    style B fill:#e8f0fe,stroke:#1762ee,color:#0d2a6b
-    style C fill:#e8f0fe,stroke:#1762ee,color:#0d2a6b
-    style D fill:#1762ee,stroke:#0f4bc4,color:#ffffff
-    style E fill:#0b7a39,stroke:#085e2b,color:#ffffff
+    A -->|"1. Add to cart"| B
+    B -->|"2. Create session"| C
+    C -->|"3. Sessions API POST"| D
+    D -->|"4. SDK key"| C
+    C -->|"5. SDK key"| B
+    B -->|"6. Init SDK"| E
+    E -->|"7. Card data (direct)"| D
+    D -->|"8. Payment result"| B
+
+    style A fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
+    style B fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
+    style C fill:#eff6ff,stroke:#1d4ed8,color:#1e3a5f
+    style D fill:#dbeafe,stroke:#1d4ed8,color:#1e3a5f
+    style E fill:#dcfce7,stroke:#16a34a,color:#14532d
 ```
 
 The key insight: **card data never touches the merchant's server or JavaScript.**
