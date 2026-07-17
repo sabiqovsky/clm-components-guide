@@ -15,6 +15,7 @@
 ## Flow Comparison
 
 ```mermaid
+%%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#1d4ed8", "primaryTextColor": "#1e3a5f", "lineColor": "#1d4ed8", "edgeLabelBackground": "#ffffff", "fontSize": "16px"}}}%%
 flowchart TD
     subgraph PL["Payment Link — Redirect flow"]
         direction LR

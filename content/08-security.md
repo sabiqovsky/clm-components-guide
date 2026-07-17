@@ -9,6 +9,7 @@ When a merchant uses Components, Xendit's secure iframe handles all card data. T
 ## How the Secure Iframe Works
 
 ```mermaid
+%%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#1d4ed8", "primaryTextColor": "#1e3a5f", "lineColor": "#1d4ed8", "edgeLabelBackground": "#ffffff", "fontSize": "16px"}}}%%
 flowchart TD
     subgraph Merchant["Merchant Domain (merchant.com)"]
         A["Merchant Page JS"]

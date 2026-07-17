@@ -3,6 +3,7 @@
 ## The Two-Layer Model
 
 ```mermaid
+%%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#1d4ed8", "primaryTextColor": "#1e3a5f", "lineColor": "#1d4ed8", "edgeLabelBackground": "#ffffff", "fontSize": "16px"}}}%%
 flowchart TD
     A["Layer 1 — Container\nFull merchant CSS control\nSize · border · background · shadow"]
     B["Layer 2 — Iframe Fields\nAppearance config via SDK\nText color · font · placeholder"]

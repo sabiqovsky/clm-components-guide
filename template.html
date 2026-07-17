@@ -303,7 +303,7 @@
 
     /* Mermaid diagrams */
     .mermaid-wrapper {
-      background: var(--bg-surface);
+      background: #ffffff;
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius);
       padding: 32px 24px;
@@ -313,10 +313,15 @@
       min-height: 120px;
     }
     .mermaid-wrapper pre { background: none; padding: 0; margin: 0; }
+    /* Force white background on rendered SVG — overrides Mermaid's internal dark rect */
+    .mermaid-wrapper svg { background: #ffffff !important; }
+    .mermaid-wrapper svg > rect:first-child { fill: #ffffff !important; }
+    .mermaid-wrapper .label { color: #1e3a5f !important; }
+    /* Ensure SVG scales properly */
     .mermaid-wrapper svg {
       max-width: 100%;
       height: auto;
-      font-size: 16px !important;
+      border-radius: 6px;
     }
 
     /* Build info bar */

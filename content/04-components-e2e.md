@@ -3,6 +3,7 @@
 ## The Full Sequence
 
 ```mermaid
+%%{init: {"theme": "default", "themeVariables": {"background": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#1d4ed8", "primaryTextColor": "#1e3a5f", "lineColor": "#1d4ed8", "edgeLabelBackground": "#ffffff", "fontSize": "16px"}}}%%
 sequenceDiagram
     actor Customer
     participant Store as Merchant Frontend
