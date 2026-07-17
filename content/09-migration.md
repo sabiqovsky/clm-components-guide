@@ -3,17 +3,26 @@
 ## Who Should Migrate?
 
 ```mermaid
-flowchart TD
-    A[Current integration?] --> B{Invoice API}
-    A --> C{Payment Link}
-    A --> D{Already Components}
-    B --> E{Need embedded UX or\nSave/Subscription?}
-    E -->|Yes| F[High priority — migrate now]
-    E -->|No| G[Medium — migrate at next checkout touch]
-    C --> H{Need Save/Subscription\nor brand control?}
-    H -->|Yes| I[Medium priority — migrate]
-    H -->|No| J[Low — Payment Link is fine]
-    D --> K[Already done — optimize]
+flowchart LR
+    A["Current\nintegration?"] --> B["Invoice API"]
+    A --> C["Payment Link"]
+    A --> D["Components"]
+
+    B --> E{"Need embedded\nor Save/Sub?"}
+    E -->|Yes| F["🔴 High priority\nMigrate now"]
+    E -->|No| G["🟡 Medium\nMigrate at next touch"]
+
+    C --> H{"Need Save/Sub\nor brand control?"}
+    H -->|Yes| I["🟡 Medium\nMigrate to Components"]
+    H -->|No| J["🟢 Low priority\nPayment Link is fine"]
+
+    D --> K["✅ Already done\nOptimize flows"]
+
+    style F fill:#fef2f2,stroke:#ef4444,color:#7f1d1d
+    style G fill:#fff8e1,stroke:#f59e0b,color:#78350f
+    style I fill:#fff8e1,stroke:#f59e0b,color:#78350f
+    style J fill:#e8f5e9,stroke:#22c55e,color:#14532d
+    style K fill:#e8f5e9,stroke:#22c55e,color:#14532d
 ```
 
 ## Decision Matrix

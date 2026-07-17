@@ -51,17 +51,23 @@ const apiKey = API_KEYS[orderCurrency];
 
 ```mermaid
 flowchart TD
-    A[POST /api/components/session] --> B{Valid request?}
-    B -->|No| C[400 Bad Request]
-    B -->|Yes| D[Extract currency]
-    D --> E{Currency supported?}
-    E -->|No| F[400 Unsupported currency]
-    E -->|Yes| G[Select API key for currency]
-    G --> H[Build payload\nmode: COMPONENTS\norigins: allowed list]
-    H --> I[POST to Xendit Sessions API]
-    I --> J{OK?}
-    J -->|No| K[500 Error]
-    J -->|Yes| L[Return components_sdk_key]
+    A["POST /api/components/session"] --> B{"Valid request?"}
+    B -->|No| C["400 Bad Request"]
+    B -->|Yes| D["Extract currency"]
+    D --> E{"Currency supported?"}
+    E -->|No| F["400 Unsupported currency"]
+    E -->|Yes| G["Select API key for currency"]
+    G --> H["Build session payload"]
+    H --> I["POST to Xendit Sessions API"]
+    I --> J{"Xendit response OK?"}
+    J -->|No| K["500 Error"]
+    J -->|Yes| L["Return components_sdk_key ✓"]
+
+    style A fill:#f0f4ff,stroke:#1762ee,color:#0d2a6b
+    style L fill:#e8f5e9,stroke:#22c55e,color:#14532d
+    style C fill:#fef2f2,stroke:#ef4444,color:#7f1d1d
+    style F fill:#fef2f2,stroke:#ef4444,color:#7f1d1d
+    style K fill:#fef2f2,stroke:#ef4444,color:#7f1d1d
 ```
 
 ## What to Keep Secret vs What to Share

@@ -10,16 +10,18 @@ The `session-complete` browser event tells your frontend the payment succeeded. 
 
 ```mermaid
 sequenceDiagram
-    participant Xendit
+    participant Xendit as ☁️ Xendit
     participant Server as Merchant Server
-    participant DB as Database
+    participant DB as 🗄 Database
 
-    Xendit->>Server: POST /webhooks/xendit\n{event: payment.succeeded, session_id, ...}
-    Server->>Server: Verify webhook signature
-    Server->>DB: Look up order by session_id
-    Server->>DB: Update order status to PAID
+    Xendit->>Server: POST /webhooks/xendit
+    Note right of Server: event: payment.succeeded
+    Server->>Server: Verify webhook signature ✓
+    Server->>DB: Find order by session_id
+    DB-->>Server: Order found
+    Server->>DB: Update status → PAID
     Server-->>Xendit: 200 OK
-    Note over Xendit,Server: Xendit retries if no 200 within timeout
+    Note over Xendit,Server: Xendit retries until 200 received
 ```
 
 ## Verifying the Webhook Signature

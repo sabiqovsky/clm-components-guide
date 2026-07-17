@@ -3,11 +3,16 @@
 ## The Two-Layer Model
 
 ```mermaid
-graph TD
-    A["Layer 1 — Container\nMerchant CSS\nWidth, border, background,\npadding, shadow, border-radius"]
-    B["Layer 2 — Iframe Fields\nAppearance Config\nText color, font, background,\nplaceholder, focus border"]
-    C["Card Data — Xendit Only\nCard number, expiry, CVV\nInside secure iframe\nCannot be read or freely styled"]
+flowchart TD
+    A["🎨 Layer 1 — Container\nFull merchant CSS control\nSize · border · background · shadow"]
+    B["🖼 Layer 2 — Iframe Fields\nAppearance config via SDK\nText color · font · placeholder"]
+    C["🔒 Card Data — Xendit Only\nCard number · expiry · CVV\nSecure iframe, cannot be read"]
+
     A --> B --> C
+
+    style A fill:#e8f0fe,stroke:#1762ee,color:#0d2a6b,font-size:15px
+    style B fill:#f3e8ff,stroke:#7c3aed,color:#3b0764,font-size:15px
+    style C fill:#e8f5e9,stroke:#22c55e,color:#14532d,font-size:15px
 ```
 
 ## Layer 1: Container CSS

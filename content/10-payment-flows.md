@@ -5,19 +5,28 @@ Components supports four distinct flows, all driven by session parameters.
 ## Flow Overview
 
 ```mermaid
-graph LR
-    subgraph Pay
-        P1[session_type: PAY] --> P2[One-time charge]
+flowchart TD
+    subgraph PAY["💳 Pay — One-time charge"]
+        direction LR
+        P1["session_type: PAY"] --> P2["Customer charged"]
     end
-    subgraph Save
-        S1[session_type: SAVE] --> S2[Tokenize card\nno charge]
+    subgraph SAVE["🔖 Save — Vault card"]
+        direction LR
+        S1["session_type: SAVE"] --> S2["Card tokenized\nno charge"]
     end
-    subgraph PaySave["Pay + Save"]
-        PS1[session_type: PAY\nallow_save: OPTIONAL] --> PS2[Charge + optionally\nsave card]
+    subgraph PAYSAVE["💳🔖 Pay + Save"]
+        direction LR
+        PS1["session_type: PAY\nallow_save: OPTIONAL"] --> PS2["Charged + card saved"]
     end
-    subgraph Sub["Subscription"]
-        SB1[session_type: SUBSCRIPTION\n+ schedule config] --> SB2[Recurring billing setup]
+    subgraph SUB["🔄 Subscription — Recurring"]
+        direction LR
+        SB1["session_type: SUBSCRIPTION\n+ schedule config"] --> SB2["Recurring billing set up"]
     end
+
+    style PAY fill:#e8f0fe,stroke:#1762ee,color:#0d2a6b
+    style SAVE fill:#f3e8ff,stroke:#7c3aed,color:#3b0764
+    style PAYSAVE fill:#fff8e1,stroke:#f59e0b,color:#78350f
+    style SUB fill:#e8f5e9,stroke:#22c55e,color:#14532d
 ```
 
 ## Flow Reference

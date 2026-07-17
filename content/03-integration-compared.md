@@ -15,18 +15,23 @@
 ## Flow Comparison
 
 ```mermaid
-flowchart LR
-    subgraph PL["Payment Link — Redirect"]
-        A1[Customer] -->|clicks pay| B1[Merchant page]
-        B1 -->|redirect| C1[Xendit-hosted page]
-        C1 -->|complete| D1[Return to merchant]
+flowchart TD
+    subgraph PL["💳 Payment Link — Redirect flow"]
+        direction LR
+        A1["🧑 Customer"] -->|"clicks pay"| B1["Merchant page"]
+        B1 -->|"redirect ↗"| C1["Xendit-hosted page"]
+        C1 -->|"complete ↩"| D1["Back to merchant"]
     end
 
-    subgraph CO["Components — Embedded"]
-        A2[Customer] -->|clicks pay| B2[Merchant page]
-        B2 -->|iframe inline| C2[Xendit secure iframe]
-        C2 -->|complete| B2
+    subgraph CO["🧩 Components — Embedded flow"]
+        direction LR
+        A2["🧑 Customer"] -->|"clicks pay"| B2["Merchant page"]
+        B2 -->|"iframe renders inline"| C2["🔒 Xendit secure iframe"]
+        C2 -->|"complete ✓"| B2
     end
+
+    style PL fill:#fff8e1,stroke:#f59e0b,color:#78350f
+    style CO fill:#e8f5e9,stroke:#22c55e,color:#14532d
 ```
 
 ## When to Recommend Each

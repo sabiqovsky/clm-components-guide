@@ -29,14 +29,20 @@ IDR, PHP, MYR, THB, VND, SGD, HKD, MXN — each mapped to a separate Xendit API 
 
 ```mermaid
 graph TD
-    A[Customer Browser] -->|1. Add to cart| B[Demo Store Frontend\nVite React :5173]
-    B -->|2. Create session| C[Demo Store Server\nExpress :8000]
-    C -->|3. Sessions API POST| D[Xendit API]
-    D -->|4. components_sdk_key| C
-    C -->|5. SDK key| B
-    B -->|6. Init SDK| E[Xendit Components\nSecure iframe]
-    E -->|7. Card data direct| D
-    D -->|8. Payment result| B
+    A["🧑 Customer Browser"] -->|"1 · Add to cart"| B["🖥 Demo Store Frontend"]
+    B -->|"2 · Create session"| C["⚙️ Demo Store Server"]
+    C -->|"3 · Sessions API POST"| D["☁️ Xendit API"]
+    D -->|"4 · components_sdk_key"| C
+    C -->|"5 · SDK key"| B
+    B -->|"6 · Init SDK"| E["🔒 Xendit Components iframe"]
+    E -->|"7 · Card data (direct)"| D
+    D -->|"8 · Payment result"| B
+
+    style A fill:#f0f4ff,stroke:#1762ee,color:#0d2a6b
+    style B fill:#e8f0fe,stroke:#1762ee,color:#0d2a6b
+    style C fill:#e8f0fe,stroke:#1762ee,color:#0d2a6b
+    style D fill:#1762ee,stroke:#0f4bc4,color:#ffffff
+    style E fill:#0b7a39,stroke:#085e2b,color:#ffffff
 ```
 
 The key insight: **card data never touches the merchant's server or JavaScript.**

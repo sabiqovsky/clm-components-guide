@@ -19,16 +19,17 @@ channelPicker.mount('#channel-picker-container');
 
 ```mermaid
 stateDiagram-v2
+    direction TB
     [*] --> Initializing: init()
-    Initializing --> Ready: ready
+    Initializing --> Ready: ready ✓
     Ready --> FormNotReady: submission-not-ready
     Ready --> FormReady: submission-ready
-    FormNotReady --> FormReady: customer fills fields
-    FormReady --> FormNotReady: customer clears fields
+    FormNotReady --> FormReady: fields filled
+    FormReady --> FormNotReady: fields cleared
     FormReady --> Submitting: session.submit()
     Submitting --> SubmissionEnd: submission-end
-    SubmissionEnd --> Complete: session-complete
-    SubmissionEnd --> FormReady: error, retry
+    SubmissionEnd --> Complete: session-complete ✓
+    SubmissionEnd --> FormReady: error — retry
     Complete --> [*]
 ```
 
