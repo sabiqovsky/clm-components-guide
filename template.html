@@ -659,6 +659,31 @@
     btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   }
 
+  // ── Session cache (sessionStorage — cleared on browser/tab close) ────
+  const SESSION_KEY = 'xg_session';
+
+  function saveSession(html, claims) {
+    try {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({ html, claims }));
+    } catch (e) {
+      // Storage full or unavailable — proceed without cache
+    }
+  }
+
+  function loadSession() {
+    try {
+      const raw = sessionStorage.getItem(SESSION_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function clearSession() {
+    sessionStorage.removeItem(SESSION_KEY);
+  }
+
   // ── Render app ──────────────────────────────────────────────────────
   function showApp(html, claims) {
     document.getElementById('main-content').innerHTML = html;
@@ -690,23 +715,32 @@
       }
 
       const html = await decryptContent(claims.hd);
+      saveSession(html, claims);
       showApp(html, claims);
     } catch (err) {
       console.error('[auth] Decryption failed:', err);
+      clearSession();
       showError('Unable to load content. Please try signing in again.');
     }
   };
 
   // ── Initialize Google Identity Services ─────────────────────────────
   window.addEventListener('load', () => {
-    // Small delay to ensure GSI script is loaded
+    // Check for cached session first (persists across refresh, clears on tab close)
+    const cached = loadSession();
+    if (cached && cached.html && cached.claims) {
+      showApp(cached.html, cached.claims);
+      return;
+    }
+
+    // No cached session — show Google sign-in
     const tryInit = setInterval(() => {
       if (window.google && window.google.accounts) {
         clearInterval(tryInit);
         google.accounts.id.initialize({
           client_id: CLIENT_ID,
           callback: window.handleCredentialResponse,
-          auto_select: false,
+          auto_select: true,
           cancel_on_tap_outside: true,
         });
         google.accounts.id.renderButton(
