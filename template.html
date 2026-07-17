@@ -449,10 +449,7 @@
 <script src="https://accounts.google.com/gsi/client" async></script>
 
 <!-- ── Mermaid ──────────────────────────────────────────────────────── -->
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-  window.__mermaid = mermaid;
-</script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 
 <!-- ── Auth + Decryption logic ──────────────────────────────────────── -->
 <script>
@@ -531,29 +528,32 @@
 
   // ── Initialize Mermaid on rendered content ──────────────────────────
   function initMermaid() {
-    const tryInit = setInterval(() => {
-      if (window.__mermaid) {
-        clearInterval(tryInit);
-        window.__mermaid.initialize({
-          startOnLoad: false,
-          theme: 'base',
-          themeVariables: {
-            primaryColor: '#eef3fc',
-            primaryBorderColor: '#1762ee',
-            primaryTextColor: '#1a1f36',
-            lineColor: '#1762ee',
-            secondaryColor: '#f7f9fc',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-            fontSize: '14px',
-          },
-          flowchart: { htmlLabels: true, curve: 'basis' },
-          sequence: { actorFontSize: 14, messageFontSize: 13 },
-        });
-        window.__mermaid.run({
-          nodes: document.querySelectorAll('pre.mermaid'),
-        });
-      }
-    }, 100);
+    // mermaid UMD script is synchronously loaded — available as window.mermaid
+    if (!window.mermaid) {
+      console.warn('[guide] Mermaid not loaded');
+      return;
+    }
+    window.mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#eef3fc',
+        primaryBorderColor: '#1762ee',
+        primaryTextColor: '#1a1f36',
+        lineColor: '#1762ee',
+        secondaryColor: '#f7f9fc',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        fontSize: '14px',
+      },
+      flowchart: { htmlLabels: true, curve: 'basis' },
+      sequence: { actorFontSize: 14, messageFontSize: 13 },
+    });
+    // Small timeout to let the DOM fully render before Mermaid scans it
+    setTimeout(() => {
+      window.mermaid.run({
+        nodes: document.querySelectorAll('pre.mermaid'),
+      });
+    }, 50);
   }
 
   // ── Scroll spy ──────────────────────────────────────────────────────

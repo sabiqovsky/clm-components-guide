@@ -82,16 +82,15 @@ function compileContent() {
     const raw = fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8');
     const compiled = marked.parse(raw);
 
-    // Extract h1 for TOC
-    const h1 = raw.match(/^#\s+(.+)$/m);
-    if (h1) {
-      const slug = h1[1].toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-      toc.push({ title: h1[1], slug });
-    }
+    // Section id is always filename-based (stable, predictable)
+    const fileSlug = file.replace(/^\d+-/, '').replace(/\.md$/, '');
 
-    // Wrap each file in a section with an anchor id
-    const slug = file.replace(/^\d+-/, '').replace(/\.md$/, '');
-    html += `<section id="${slug}">\n${compiled}\n</section>\n`;
+    // Extract h1 title for TOC display text — but link uses fileSlug
+    const h1 = raw.match(/^#\s+(.+)$/m);
+    const title = h1 ? h1[1] : fileSlug;
+    toc.push({ title, slug: fileSlug });
+
+    html += `<section id="${fileSlug}">\n${compiled}\n</section>\n`;
   }
 
   log(`  Sections: ${files.length}, TOC entries: ${toc.length}`);
@@ -175,8 +174,8 @@ function main() {
     .replace('{{ENCRYPTED_BLOB}}', blob)
     .replace('{{CONTENT_SALT}}', contentSalt)
     .replace('{{TOC_HTML}}', tocHtml)
-    .replace('{{BUILD_TIME}}', buildTime)
-    .replace('{{SECTION_COUNT}}', toc.length.toString());
+    .replaceAll('{{BUILD_TIME}}', buildTime)
+    .replaceAll('{{SECTION_COUNT}}', toc.length.toString());
 
   // 6. Verify no plaintext leaked (use a prose string that won't appear in TOC or nav)
   const sampleWord = 'session.submit()';
