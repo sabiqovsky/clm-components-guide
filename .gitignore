@@ -2,4 +2,10 @@ node_modules/
 .DS_Store
 .env
 *.env
+
+# Internal workflow / prompt files — not for public deployment
+CLAUDE.md
+docs/COMPONENTS_GUIDE_PLAN.md
+test-decrypt.js
+
 # docs/index.html is intentionally committed (it's the deploy artifact)
